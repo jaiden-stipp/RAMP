@@ -43,6 +43,14 @@ The example asks how a small research team can keep findings traceable across ag
 
 ## Configure a project
 
+### Install or link the local CLI
+
+This repository is a **local package under development, not a published npm release**. No distribution license has been selected. To test on your machine from this checkout, run `npm ci` then `npm link`; `ramp --help` is then available from any directory. Existing `node src/cli.js ...` commands still work.
+
+For an isolated package-install test without a global link, run `npm pack --pack-destination <existing-temp-directory>`, then in a separate directory run `npm install <path-to-ramp-protocol-0.1.0.tgz>` and `npm exec -- ramp init "my research"`. Run subsequent commands through `npm exec -- ramp ...` there. A local archive install includes the schemas, core, built-ins, templates, and example used by initialization. Nothing is published; `private: true` intentionally prevents accidental npm publication.
+
+Projects require package 0.1.0 / protocol 0.1.0 and the exact core/module contents pinned by their lock. Use `ramp lock <ramp.json>` once and `ramp validate <ramp.json> --locked` before sharing or resuming. Project paths may contain spaces; quote them in your shell. Moving the project, its local modules, and lock together preserves the command flow. Resolve stale locks through explicit review, never automatic refresh.
+
 For a local visual interface, run `npm run builder`, then open **http://127.0.0.1:4173**. Select modules, inspect dependencies and inline errors, preview each agent, and export a manifest, lockfile, and independent instruction bundles. Use `npm run builder -- <ramp.json>` to open a recipe or a project with custom local modules. See the [builder guide](docs/BUILDER.md).
 
 Create a new directory with `node src/cli.js init <new-directory>` (the parent must exist). The command refuses existing directories and includes a valid manifest, research templates, and a getting-started guide. Use `node src/cli.js --help` for commands. Export independent agent instructions with `node src/cli.js compose <ramp.json> --agent reviewer --out reviewer.md`; shared core, charter, and provenance are always included. Existing output files are never overwritten.
