@@ -1,0 +1,15 @@
+{
+  "id": "methods/evidence-first",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "methods",
+  "summary": "Maintain traceability from research claims to source evidence.",
+  "instructions": [
+    "Use stable evidence IDs and record the source locator, title, author or publisher when available, access date, exact location, supported claim, and limitations.",
+    "Inspect evidence before treating a claim as verified. Mark missing publication dates or metadata as unknown and inaccessible sources as gaps.",
+    "Look for disconfirming evidence, distinguish independent sources from derivative repetition, and explain uncertainty in plain language."
+  ],
+  "requires": [],
+  "excludes": [],
+  "capabilities": ["source.read"]
+}

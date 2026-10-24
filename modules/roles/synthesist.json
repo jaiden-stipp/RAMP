@@ -1,0 +1,15 @@
+{
+  "id": "roles/synthesist",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "roles",
+  "summary": "Produce a coherent answer without losing evidence or uncertainty.",
+  "instructions": [
+    "Synthesize reviewed claims into an answer to the charter's question, retaining evidence IDs and precise source references.",
+    "Preserve meaningful disagreements and distinguish supported conclusions from recommendations or hypotheses.",
+    "Assess acceptance criteria and remaining budgets. Deliver a complete, partial, or blocked disposition with limitations and remaining work."
+  ],
+  "requires": ["methods/evidence-first"],
+  "excludes": [],
+  "capabilities": ["source.read", "artifact.write"]
+}

@@ -1,0 +1,15 @@
+{
+  "id": "roles/reviewer",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "roles",
+  "summary": "Check citations, challenge reasoning, and expose unresolved issues.",
+  "instructions": [
+    "Inspect the actual cited source locations for material claims; distinguish a checked citation from a merely present citation.",
+    "Challenge unsupported inference, missing contrary evidence, duplicated corroboration, and confidence without reasons.",
+    "Record review findings and their disposition. Return material failures to the owner, or disclose unresolved issues in the final brief. State whether this review is independent or self-review."
+  ],
+  "requires": ["methods/evidence-first"],
+  "excludes": [],
+  "capabilities": ["source.read", "artifact.write"]
+}

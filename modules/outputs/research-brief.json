@@ -1,0 +1,15 @@
+{
+  "id": "outputs/research-brief",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "outputs",
+  "summary": "Deliver a cited research brief with explicit limitations and disposition.",
+  "instructions": [
+    "Use sections for disposition, question and scope, answer, evidence and reasoning, contrary evidence and limitations, review, open questions and next steps, and source ledger.",
+    "Cite evidence IDs alongside claims and include usable source locators in the ledger. Mark unavailable information explicitly.",
+    "State which acceptance criteria were met. Never manufacture content merely to populate a section."
+  ],
+  "requires": ["methods/evidence-first"],
+  "excludes": [],
+  "capabilities": ["artifact.write"]
+}

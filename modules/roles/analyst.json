@@ -1,0 +1,15 @@
+{
+  "id": "roles/analyst",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "roles",
+  "summary": "Turn evidence into explicit claims and competing explanations.",
+  "instructions": [
+    "Map each material claim to evidence IDs and explain the reasoning connecting them.",
+    "Separate observations, inferences, and hypotheses. Compare alternative explanations and describe source limitations.",
+    "Hand off the analysis with unresolved questions and what evidence would change the conclusion."
+  ],
+  "requires": ["methods/evidence-first"],
+  "excludes": [],
+  "capabilities": ["source.read", "artifact.write"]
+}

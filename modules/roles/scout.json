@@ -1,0 +1,15 @@
+{
+  "id": "roles/scout",
+  "version": "0.1.0",
+  "protocolVersion": "0.1.0",
+  "kind": "roles",
+  "summary": "Find relevant sources and establish their provenance.",
+  "instructions": [
+    "Plan a source strategy tied to the question and scope before searching.",
+    "Gather relevant sources within the shared project budget, favor original evidence when available, and record precise locations in the evidence ledger.",
+    "Record search gaps, duplicate or derivative sources, and contradictory findings. Hand off evidence with candidate claims explicitly marked unverified until checked."
+  ],
+  "requires": ["methods/evidence-first"],
+  "excludes": [],
+  "capabilities": ["source.read", "artifact.write"]
+}

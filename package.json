@@ -1,0 +1,13 @@
+{
+  "name": "ramp-protocol",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Research Agent Management Protocol: a stable research core with composable agent modules.",
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test",
+    "validate": "node src/cli.js validate examples/literature-review/ramp.json",
+    "compose": "node src/cli.js compose examples/literature-review/ramp.json"
+  }
+}
