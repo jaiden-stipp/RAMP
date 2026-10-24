@@ -27,7 +27,7 @@ Personality is independent of authority: a persuasive or adventurous persona can
 
 ## Try it
 
-Requires Node.js 22 or later. Install the pinned validator dependencies with `npm ci`. No credentials or API keys are needed. See [schema/editor and diagnostics support](docs/VALIDATION.md).
+Requires Node.js 22 or later. Install the pinned dependencies with `npm ci`. No credentials or API keys are needed. See [schema/editor and diagnostics support](docs/VALIDATION.md).
 
 ```sh
 npm ci
@@ -42,6 +42,8 @@ The last command creates a Markdown instruction bundle for the sample project. G
 The example asks how a small research team can keep findings traceable across agent handoffs. It contains an illustrative project configuration, not completed research or fabricated findings.
 
 ## Configure a project
+
+For a local visual interface, run `npm run builder`, then open **http://127.0.0.1:4173**. Select modules, inspect dependencies and inline errors, preview each agent, and export a manifest, lockfile, and independent instruction bundles. Use `npm run builder -- <ramp.json>` to open a recipe or a project with custom local modules. See the [builder guide](docs/BUILDER.md).
 
 Create a new directory with `node src/cli.js init <new-directory>` (the parent must exist). The command refuses existing directories and includes a valid manifest, research templates, and a getting-started guide. Use `node src/cli.js --help` for commands. Export independent agent instructions with `node src/cli.js compose <ramp.json> --agent reviewer --out reviewer.md`; shared core, charter, and provenance are always included. Existing output files are never overwritten.
 
@@ -72,6 +74,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Recorded research pilot](examples/pilot-citation-reliability/README.md): actual source review, separate model contexts, preserved failures, and an offline evaluation rubric/report. It does not establish a general performance advantage.
 - [Reference host adapter](docs/HOSTS.md): capability/tool mediation, budgets, cancellation, checkpoints, and a deterministic fake-agent example without API keys.
 - [Research recipes](recipes/README.md): scoped literature review, technical feasibility, alternative comparison, and interchangeable method/persona/output modules.
+- [Local visual builder](docs/BUILDER.md): assemble agents, inspect constraints and changes, and export portable configurations with the CLI's validator.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 

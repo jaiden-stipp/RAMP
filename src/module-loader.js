@@ -12,7 +12,7 @@ function present(path) {
   catch (error) { if (error.code === 'ENOENT') return false; throw error; }
 }
 
-export function resolveModuleFile(id, repositoryRoot, projectDirectory) {
+export function moduleRoots(repositoryRoot, projectDirectory) {
   const projectRoot = realpathSync(projectDirectory);
   const builtinRoot = realpathSync(join(repositoryRoot, 'modules'));
   const localCandidateRoot = join(projectRoot, 'modules');
@@ -22,6 +22,12 @@ export function resolveModuleFile(id, repositoryRoot, projectDirectory) {
     if (!contained(projectRoot, localRoot)) throw new DiagnosticError([diagnostic('MODULE_ROOT_ESCAPE', 'Project modules directory resolves outside the project', localCandidateRoot)]);
     if (localRoot !== builtinRoot) roots.push({ path: localRoot, origin: 'project' });
   }
+  return roots;
+}
+
+export function resolveModuleFile(id, repositoryRoot, projectDirectory) {
+  const projectRoot = realpathSync(projectDirectory);
+  const roots = moduleRoots(repositoryRoot, projectDirectory);
   const matches = roots.map(root => ({ ...root, file: join(root.path, `${id}.json`) })).filter(root => present(root.file));
   if (!matches.length) throw new DiagnosticError([diagnostic('MODULE_NOT_FOUND', `Module ${id} not found in built-in or project modules`, join(projectRoot, 'ramp.json'))]);
   if (matches.length > 1) throw new DiagnosticError([diagnostic('MODULE_AMBIGUOUS', `Duplicate module ID ${id}: ${matches.map(m => m.file).join(', ')}`, matches[1].file)]);

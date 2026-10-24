@@ -10,10 +10,12 @@
   "scripts": {
     "test": "node --test",
     "validate": "node src/cli.js validate examples/literature-review/ramp.json",
-    "compose": "node src/cli.js compose examples/literature-review/ramp.json"
+    "compose": "node src/cli.js compose examples/literature-review/ramp.json",
+    "builder": "node src/builder/server.js"
   },
   "dependencies": {
     "ajv": "^8.20.0",
-    "ajv-formats": "^3.0.1"
+    "ajv-formats": "^3.0.1",
+    "fflate": "^0.8.3"
   }
 }

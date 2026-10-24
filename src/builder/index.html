@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>RAMP · Configuration builder</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<a class="skip" href="#workspace">Skip to configuration</a>
+<header><a class="brand" href="/" aria-label="RAMP builder home"><span class="mark" aria-hidden="true">▦</span> RAMP <span class="tag">PROTOCOL 0.1</span></a><span class="local"><span aria-hidden="true">●</span> Local workspace</span></header>
+<main id="workspace">
+<section class="intro"><div><p class="eyebrow">RESEARCH AGENT MANAGEMENT PROTOCOL</p><h1>Build your research team.</h1><p>One shared core. Interchangeable skills. A clear boundary for every agent.</p></div><button id="export" class="primary" disabled>Export configuration ↗</button></section>
+<div class="workspace">
+<aside class="charter panel" aria-labelledby="charter-heading"><div class="section-title"><span class="step">01</span><h2 id="charter-heading">Set the boundaries</h2></div>
+<details class="core" open><summary>Shared core <span class="badge">ALWAYS ON</span></summary><p>Every agent inherits these rules, with every persona.</p><pre id="core" tabindex="0" aria-label="Shared core rules"></pre></details><p class="hint" id="ceiling-summary" aria-live="polite"></p>
+<form id="charter" novalidate>
+<h3>Project charter</h3>
+<label for="project-title">Project title</label><input id="project-title" name="title" required>
+<label for="project-id">Project ID</label><input id="project-id" name="id" required pattern="[a-z][a-z0-9-]*">
+<label for="question">Research question</label><textarea id="question" name="question" rows="3" required></textarea>
+<label for="scope">In scope <span>one item per line</span></label><textarea id="scope" name="scope" rows="3"></textarea>
+<label for="exclusions">Out of scope <span>one item per line</span></label><textarea id="exclusions" name="exclusions" rows="2"></textarea>
+<fieldset><legend>Permission ceiling</legend><p class="hint">Modules must stay within these capabilities. Hosts authorize actual tools.</p><div id="capabilities"></div><label for="extra-capabilities">Other capabilities <span>one per line</span></label><textarea id="extra-capabilities" rows="2" placeholder="e.g. dataset.read"></textarea></fieldset>
+<div class="limits"><div><label for="max-sources">Source limit</label><input id="max-sources" name="maxSources" type="number" min="1" step="1"></div><div><label for="max-iterations">Iteration limit</label><input id="max-iterations" name="maxIterations" type="number" min="1" step="1"></div></div>
+<label for="stop-conditions">Stop conditions <span>one per line</span></label><textarea id="stop-conditions" name="stopConditions" rows="4"></textarea>
+</form></aside>
+<section class="library panel" aria-labelledby="library-heading"><div class="section-title"><span class="step">02</span><h2 id="library-heading">Choose the modules</h2></div><p class="hint">Select modules for the active agent. Dependencies stay explicit.</p>
+<div id="categories" class="categories" role="group" aria-label="Module category"><button type="button" data-kind="roles" aria-pressed="true">Roles</button><button type="button" data-kind="methods" aria-pressed="false">Methods</button><button type="button" data-kind="personas" aria-pressed="false">Personas</button><button type="button" data-kind="outputs" aria-pressed="false">Outputs</button></div>
+<div class="library-heading"><h3 id="kind-title">Roles</h3><span id="kind-rule"></span></div><div id="modules"></div><div id="catalog-errors" class="hint"></div></section>
+<aside class="team panel" aria-labelledby="team-heading"><div class="section-title"><span class="step">03</span><h2 id="team-heading">Assemble the team</h2></div>
+<label for="active-agent">Active agent</label><select id="active-agent"></select><div class="agent-actions"><button id="add-agent" type="button">+ Add agent</button><button id="remove-agent" type="button">Remove</button></div><label for="agent-id">Agent ID</label><input id="agent-id"><p class="hint">Lowercase words separated by hyphens.</p>
+<div id="assembly"></div><div class="validation" aria-live="polite" aria-atomic="true"><h3 id="status">Checking configuration…</h3><ul id="errors"></ul></div><p class="footnote">Exports include a manifest, lockfile, full instructions, and selected local modules. Agents run in your chosen host.</p></aside>
+</div>
+<section class="inspection panel" aria-labelledby="inspect-heading"><div class="inspection-head"><div><p class="eyebrow">BEFORE YOU EXPORT</p><h2 id="inspect-heading">Inspect what changes.</h2></div><div class="categories" role="group" aria-label="Inspection view"><button id="show-preview" aria-pressed="true">Agent instructions</button><button id="show-changes" aria-pressed="false">Changes since opening</button></div></div>
+<div id="preview-view"><label for="preview-agent">Preview agent</label><select id="preview-agent"></select><pre id="preview" tabindex="0" aria-label="Composed agent instructions"></pre></div><div id="changes-view" hidden><p class="hint">Compared with the configuration opened when this server started.</p><div id="changes"></div></div></section>
+<details class="advanced panel"><summary>Manifest editor</summary><p class="hint">Edit or paste a manifest. Modules resolve from this workspace. Applying invalid JSON keeps the last configuration.</p><label for="manifest-json">Project manifest JSON</label><textarea id="manifest-json" rows="12" spellcheck="false"></textarea><button id="apply-json">Apply manifest</button><p id="json-error" role="alert"></p></details>
+<footer>RAMP / configuration authoring <span>Local only · No credentials · No agents launched</span></footer>
+</main></body></html>

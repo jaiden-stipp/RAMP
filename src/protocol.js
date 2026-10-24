@@ -123,6 +123,11 @@ export function readJson(path) {
 
 export function loadProject(manifestPath, root = REPO_ROOT) {
   const { raw, value: manifest } = readJson(manifestPath);
+  return loadProjectData(manifest, { manifestPath, root, raw });
+}
+
+// In-memory authors use exactly the CLI's schema, module resolution and semantic checks.
+export function loadProjectData(manifest, { manifestPath, root = REPO_ROOT, raw = `${JSON.stringify(manifest, null, 2)}\n` }) {
   try { validateManifest(manifest, manifestPath); }
   catch (error) { throw new DiagnosticError(diagnosticsOf(error, manifestPath)); }
   const moduleRoot = realpathSync(join(root, 'modules'));
