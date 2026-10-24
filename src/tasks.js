@@ -23,6 +23,10 @@ export function replayTasks(events, projectId, agentIds) {
   const tasks = new Map();
   for (const event of events) {
     requireValue(event.projectId === projectId && text(event.actor) && text(event.reason), 'Task event requires matching project, actor, and reason');
+    if (event.type === 'checkpoint') {
+      requireValue(['created', 'rejected'].includes(event.operation), 'Unknown checkpoint operation');
+      continue;
+    }
     if (event.type === 'create') {
       const t = event.task; assertSchema('task', t);
       requireValue(!tasks.has(t.id) && t.status === 'planned' && t.phase === 'scope', 'New tasks need a unique ID and start planned in scope');

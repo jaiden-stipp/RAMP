@@ -148,7 +148,22 @@ export function loadProject(manifestPath, root = REPO_ROOT) {
   });
   if (errors.length) throw new DiagnosticError(errors);
   const core = readFileSync(join(root, 'spec', 'CORE.md'), 'utf8');
-  return { manifest, manifestHash: sha256(raw), core, coreHash: sha256(core), agents };
+  return { manifest, manifestHash: sha256(raw), core, coreHash: sha256(core), agents, repositoryRoot: root };
+}
+
+export function configureAgent(project, agentId, ids, projectDirectory) {
+  const manifest = structuredClone(project.manifest);
+  const agent = manifest.agents.find(a => a.id === agentId);
+  requireThat(agent, `Unknown destination agent: ${agentId}`);
+  agent.modules = ids;
+  validateManifest(manifest);
+  const modules = ids.map(id => {
+    const { path, origin } = resolveModuleFile(id, project.repositoryRoot ?? REPO_ROOT, projectDirectory);
+    const loaded = readJson(path);
+    return { ...validateModule(loaded.value, id, path), origin, sourcePath: path, hash: sha256(loaded.raw) };
+  });
+  validateAgent(agent, modules, manifest.project.allowedCapabilities);
+  return { ...project, manifest, manifestHash: sha256(JSON.stringify(manifest)), agents: project.agents.map(a => a.id === agentId ? { id: agentId, modules } : a) };
 }
 
 export function compose(project, agentId) {
