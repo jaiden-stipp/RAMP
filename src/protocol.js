@@ -106,7 +106,8 @@ export function validateAgent(agent, modules, allowedCapabilities) {
 }
 
 export function sha256(content) {
-  return createHash('sha256').update(content).digest('hex');
+  const normalized = typeof content === 'string' ? content.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n') : content;
+  return createHash('sha256').update(normalized).digest('hex');
 }
 
 export function readJson(path) {
@@ -114,7 +115,7 @@ export function readJson(path) {
   try { raw = readFileSync(path, 'utf8'); }
   catch (error) { throw new DiagnosticError([diagnostic('FILE_READ', error.message, path)]); }
   try {
-    return { raw, value: JSON.parse(raw) };
+    return { raw, value: JSON.parse(raw.replace(/^\uFEFF/, '')) };
   } catch (error) {
     throw new DiagnosticError([diagnostic('JSON_SYNTAX', `Invalid JSON: ${error.message}`, path)]);
   }

@@ -3,11 +3,15 @@ import { dirname, resolve } from 'node:path';
 import { compose, loadProject } from './protocol.js';
 import { diagnosticsOf } from './validation.js';
 import { initializeProject } from './scaffold.js';
+import { assertLocked, compareLock, lockPath, writeLock } from './lockfile.js';
+import { readJson } from './protocol.js';
 
 const usage = `Usage:
   node src/cli.js init <new-directory>
-  node src/cli.js validate <ramp.json> [--json]
-  node src/cli.js compose <ramp.json> [--agent <id>] [--out <new-bundle.md>]
+  node src/cli.js validate <ramp.json> [--json] [--locked]
+  node src/cli.js compose <ramp.json> [--agent <id>] [--out <new-bundle.md>] [--locked]
+  node src/cli.js lock <ramp.json> [--update]
+  node src/cli.js diff <ramp.json>
   node src/cli.js --help
 
 init refuses existing directories. compose refuses existing output files.
@@ -19,8 +23,8 @@ try {
     console.log(usage);
   } else {
     const [command, path, ...rawOptions] = args;
-    if (!['init', 'validate', 'compose'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
-    const accepted = { init: {}, validate: { '--json': false }, compose: { '--agent': true, '--out': true } }[command];
+    if (!['init', 'validate', 'compose', 'lock', 'diff'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
+    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {} }[command];
     const options = {};
     for (let index = 0; index < rawOptions.length; index++) {
       const name = rawOptions[index];
@@ -35,7 +39,13 @@ try {
       const manifestPath = resolve(path);
       if (options['--out'] && resolve(options['--out']) === manifestPath) throw new Error('Output must not overwrite the project manifest');
       const project = loadProject(manifestPath);
-      if (command === 'validate') {
+      if (options['--locked']) assertLocked(project, lockPath(manifestPath));
+      if (command === 'lock') {
+        const changes = writeLock(project, lockPath(manifestPath), !!options['--update']);
+        console.log(JSON.stringify({ lock: lockPath(manifestPath), changes }, null, 2));
+      } else if (command === 'diff') {
+        console.log(JSON.stringify({ changes: compareLock(readJson(lockPath(manifestPath)).value, project) }, null, 2));
+      } else if (command === 'validate') {
         console.log(jsonMode ? JSON.stringify({ valid: true, project: project.manifest.project.id, diagnostics: [] }) : `Valid RAMP project: ${project.manifest.project.id} (${project.agents.length} agents)`);
       } else {
         const output = compose(project, options['--agent']);

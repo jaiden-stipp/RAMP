@@ -60,6 +60,8 @@ Changing modules changes the agent configuration. Record a handoff and recompose
 
 ## Read next
 
+Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configuration and review changes before a research session. Locks never refresh during ordinary validation or composition.
+
 - [Protocol specification](spec/PROTOCOL.md): requirements, lifecycle, contracts, and composition.
 - [Module authoring](docs/MODULES.md): create and review a new module.
 - [Example workflow](examples/literature-review/README.md): run the sample manually.
