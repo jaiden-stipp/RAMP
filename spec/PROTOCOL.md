@@ -29,7 +29,7 @@ RAMP permission names are declarations. They do not grant actual access. The hos
 5. Check role, persona, and output cardinality.
 6. Render the core, project charter, selected instructions, and content hashes.
 
-The initial composer accepts protocol version `0.1.0` exactly. Module versions use three numeric components; the exact file content is identified by SHA-256 in generated bundles. Same-version file edits therefore produce different hashes. This draft does not implement version ranges, a registry, signatures, automatic dependency resolution, or arbitrary project-local module directories.
+The composer accepts protocol version `0.1.0` exactly. Module versions use three numeric components; file content is identified by SHA-256 in generated bundles. Same-version instruction edits therefore produce different hashes. Project-local modules use a `modules/` directory beside the manifest, with explicit dependencies, duplicate-ID rejection, root containment, and portable origin provenance. Version ranges, registries, signatures, automatic dependency resolution, and arbitrary module directories are not implemented.
 
 Structural validation MUST fail closed. Semantic contradictions that are not expressed by dependency, exclusion, or capability fields require human review. A conflicting instruction MUST be escalated; the agent MUST NOT silently choose the last module.
 

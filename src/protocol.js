@@ -3,6 +3,7 @@ import { createHash } from 'node:crypto';
 import { dirname, isAbsolute, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { assertSchema, DiagnosticError, diagnostic, diagnosticsOf } from './validation.js';
+import { resolveModuleFile } from './module-loader.js';
 
 export const PROTOCOL_VERSION = '0.1.0';
 export const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -131,11 +132,9 @@ export function loadProject(manifestPath, root = REPO_ROOT) {
       const candidate = join(moduleRoot, `${id}.json`);
       try {
       if (!cache.has(id)) {
-        const path = realpathSync(join(moduleRoot, `${id}.json`));
-        const local = relative(moduleRoot, path);
-        requireThat(local !== '..' && !local.startsWith(`..\\`) && !local.startsWith('../') && !isAbsolute(local), `Module ${id} resolves outside module directory`);
+        const { path, origin } = resolveModuleFile(id, root, dirname(manifestPath));
         const loaded = readJson(path);
-        cache.set(id, { ...validateModule(loaded.value, id, path), hash: sha256(loaded.raw) });
+        cache.set(id, { ...validateModule(loaded.value, id, path), hash: sha256(loaded.raw), origin, sourcePath: path });
       }
       return cache.get(id);
       } catch (error) { errors.push(...diagnosticsOf(error, candidate)); return null; }
@@ -177,7 +176,7 @@ export function compose(project, agentId) {
   for (const agent of agents) {
     lines.push(`## Agent: ${agent.id}`, '', 'Apply the shared core and charter plus the following modules. Preserve evidence and record a handoff before changing this configuration.', '');
     for (const module of agent.modules) {
-      lines.push(`### ${module.id} @ ${module.version}`, '', module.summary, '', `SHA-256: ${module.hash}`, '', ...module.instructions.map(item => `- ${item}`), '');
+      lines.push(`### ${module.id} @ ${module.version}`, '', module.summary, '', `Origin: ${module.origin}`, '', `SHA-256: ${module.hash}`, '', ...module.instructions.map(item => `- ${item}`), '');
     }
   }
   return `${lines.join('\n').trimEnd()}\n`;

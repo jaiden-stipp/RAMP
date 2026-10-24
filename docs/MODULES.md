@@ -2,7 +2,7 @@
 
 A module is a small, reviewable instruction contract. Start with one responsibility. Keep communication style separate from research method and role.
 
-Create `modules/<kind>/<name>.json`, then add its ID to an agent in the project manifest. IDs have exactly two lowercase, hyphen-separated segments; the first is the kind. The file's `id` must match its path.
+Create `modules/<kind>/<name>.json` beside your project's `ramp.json`, then add its ID to an agent in the manifest. Built-in modules remain available. Selected IDs must exist in exactly one root: duplicate local/built-in IDs fail instead of overriding. The project's module root must remain inside the project directory; symlinks/junctions escaping either approved module root are rejected. No files are downloaded. IDs have exactly two lowercase, hyphen-separated segments; the first is the kind. The file's `id` must match its path. Bundles include portable `builtin:` or `project:modules/` origins and content hashes.
 
 ```json
 {
