@@ -79,9 +79,14 @@ export class TaskStore {
   constructor(path, project, projectDirectory) { this.path = path; this.baseProject = project; this.project = project; this.directory = projectDirectory; }
   replay(events) { return replayTasks(events, this.project.manifest.project.id, this.project.agents.map(a => a.id)); }
   list() { return this.replay(readJournal(this.path).map(r => r.payload)); }
-  submit(input) {
+  event(input) {
     const event = { ...structuredClone(input), projectId: this.project.manifest.project.id };
     if (event.type === 'transition') event.artifacts = (event.artifacts ?? []).map(a => artifactReference(this.directory, a));
+    return event;
+  }
+  preview(input) { return this.replay([...readJournal(this.path).map(r => r.payload), this.event(input)]); }
+  submit(input) {
+    const event = this.event(input);
     appendJournal(this.path, event, events => this.replay(events));
     return this.list();
   }

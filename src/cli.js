@@ -11,6 +11,7 @@ import { TaskStore } from './tasks.js';
 import { join } from 'node:path';
 import { HandoffStore } from './handoffs.js';
 import { BudgetStore } from './budgets.js';
+import { workflowCommand } from './workflow-cli.js';
 
 const usage = `Usage:
   node src/cli.js init <new-directory>
@@ -24,13 +25,17 @@ const usage = `Usage:
   node src/cli.js handoff <ramp.json> [--create <request.json> | --preview <id> | --resume <id>]
   node src/cli.js budgets <ramp.json> [--event <budget-event.json>]
   node src/cli.js --help
+  ramp task <create|inspect|activate|block|advance|review|complete|cancel> --help
+  ramp checkpoint <prepare|preview|resume> --help
 
 init refuses existing directories. compose refuses existing output files.
 Composition produces instructions; it does not launch agents.`;
 const args = process.argv.slice(2);
 const jsonMode = args.includes('--json');
 try {
-  if (args.length === 1 && ['--help', '-h', 'help'].includes(args[0])) {
+  if (['task', 'checkpoint'].includes(args[0])) {
+    console.log(workflowCommand(args));
+  } else if (args.length === 1 && ['--help', '-h', 'help'].includes(args[0])) {
     console.log(usage);
   } else {
     const [command, path, ...rawOptions] = args;
