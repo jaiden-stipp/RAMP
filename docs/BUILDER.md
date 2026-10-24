@@ -5,7 +5,7 @@ Run from the RAMP checkout with Node.js 22 or later:
 ```sh
 npm ci
 npm run builder
-# Or open a particular valid project / recipe:
+# Or open a particular project / recipe (invalid manifests also open):
 npm run builder -- recipes/technical-feasibility/ramp.json --port 4173
 ```
 
@@ -17,7 +17,17 @@ Open **http://127.0.0.1:4173** in your browser. The default is the literature-re
 4. Inspect each agent's complete instructions and changes relative to the project opened at server startup. Swapping a persona changes communication instructions; it does not remove core rules or grant capabilities. A manifest editor also supports local JSON editing/pasting.
 5. Export `ramp-configuration.zip`. Extract into a new directory. It contains `ramp.json`, `ramp.lock.json`, `instructions/all-agents.md`, `instructions/agents/<agent-id>.md`, and every selected project-local module under `modules/`.
 
-The opened project is never overwritten. Edits live in the browser until exported; reloading discards them. JSON validation/export requests go only to the local server. There is no upload to an external service, persistence dashboard, marketplace, authentication, or model launcher.
+The opened manifest and lock are never overwritten. Browser drafts preserve edits across reload in the same browser/origin/port/workspace. The status bar explicitly labels unsaved/recovered work. If browser storage is unavailable, a navigation warning protects unsaved changes. JSON requests go only to the local server. There is no upload to an external service, persistence dashboard, marketplace, authentication, or model launcher.
+
+## Recover and save drafts
+
+Invalid role/dependency/capability combinations open with the normal validator's inline explanations and can be fixed visually. Malformed JSON opens the manifest editor with the original text and a parsing diagnostic; incomplete object shapes also use that editor. **Apply manifest** enables the visual controls when the JSON has the needed shape. Export stays blocked until an applied configuration validates. Unapplied or malformed editor text is recoverable too.
+
+Choose **Review draft save** to inspect the manifest text diff and the exact destination, then **Save reviewed draft**. This writes a new, exclusive `.ramp/drafts/<generated-id>.json` in the opened project. It can preserve invalid recovery text as well as valid configurations. It never replaces `ramp.json`, `ramp.lock.json`, or a previous draft. Filesystem destinations are fixed by the server; browser requests cannot choose a path. Editing after a review disables its save button until reviewed again. Review tokens expire after ten minutes and are usable once.
+
+If the opened manifest changes on disk, review/save fails with a conflict. Restart the builder, recover the browser draft, and inspect its diff against the newly opened file. Symlink/junction draft parents are refused. A draft is an alternate recovery artifact, not an activated configuration or a refreshed lock. Review and promote it through your editor/version control when ready; validate it in the project's original directory so project-local modules resolve correctly. ZIP export remains the portable route with matching locks and local modules.
+
+Browser verification opened malformed JSON, applied an invalid configuration, reloaded and recovered the draft, repaired the role/dependency/capability selections, reviewed the diff, and saved a new local draft while leaving the malformed source untouched. Automated tests cover these service paths plus disk conflicts, one-use tokens, rejected arbitrary targets and escaping directory links.
 
 ## Use the export
 

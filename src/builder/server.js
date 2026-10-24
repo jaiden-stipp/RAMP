@@ -30,7 +30,7 @@ export function createBuilderServer(manifestPath, root = REPO_ROOT) {
         if (!asset) return send(404, { error: 'Not found' });
         return send(200, readFileSync(join(directory, asset[0])), asset[1]);
       }
-      if (request.method !== 'POST' || !['/api/validate', '/api/export'].includes(request.url)) return send(404, { error: 'Not found' });
+      if (request.method !== 'POST' || !['/api/validate', '/api/export', '/api/draft-preview', '/api/draft-save'].includes(request.url)) return send(404, { error: 'Not found' });
       // Exact host and same-origin checks prevent other sites from using this local authoring server.
       if (request.headers.origin !== `http://${request.headers.host}` || request.headers['content-type']?.split(';')[0].trim() !== 'application/json') return send(403, { error: 'Same-origin JSON request required' });
       let size = 0; const chunks = [];
@@ -42,6 +42,8 @@ export function createBuilderServer(manifestPath, root = REPO_ROOT) {
       let body;
       try { body = JSON.parse(Buffer.concat(chunks).toString('utf8')); }
       catch { return send(400, { error: 'Invalid JSON' }); }
+      if (request.url === '/api/draft-preview') return send(200, service.draftPreview(body));
+      if (request.url === '/api/draft-save') return send(200, service.saveDraft(body));
       const result = service.validate(body?.manifest);
       if (request.url === '/api/validate' || !result.valid) return send(result.valid ? 200 : 422, result);
       response.setHeader('Content-Disposition', 'attachment; filename="ramp-configuration.zip"');

@@ -2,6 +2,7 @@ import { selectModule } from './selection.js';
 const $ = id => document.getElementById(id);
 let manifest, catalog, active = 0, category = 'roles', result, sequence = 0, timer;
 let capabilities = [];
+let draftRaw = '', draftKey, reviewToken, dirty = false, storageOkay = true, rawEditing = false;
 const kinds = ['roles', 'methods', 'personas', 'outputs'];
 const labels = { roles: 'Role', methods: 'Methods', personas: 'Persona', outputs: 'Output' };
 const rules = { roles: 'Exactly one', methods: 'Combine as needed', personas: 'At most one', outputs: 'At most one' };
@@ -74,8 +75,14 @@ function renderAssembly() {
 }
 function pending() { $('export').disabled = true; $('status').textContent = 'Checking configuration…'; $('status').parentElement.className = 'validation'; $('preview').textContent = 'Preview updates after validation.'; }
 function changed() {
-  $('manifest-json').value = JSON.stringify(manifest, null, 2);
+  markDraft(JSON.stringify(manifest, null, 2)); rawEditing = false;
   clearTimeout(timer); sequence++; pending(); timer = setTimeout(validate, 180);
+}
+function markDraft(raw) {
+  draftRaw = raw; $('manifest-json').value = raw; dirty = true; reviewToken = null; $('save-draft').disabled = true; $('draft-review').hidden = true;
+  try { localStorage.setItem(draftKey, JSON.stringify({ raw, baseHash: catalog.baseHash })); storageOkay = true; }
+  catch { storageOkay = false; }
+  $('draft-status').textContent = storageOkay ? 'Unsaved changes. A recoverable draft is stored in this browser; review to save a new project-local draft.' : 'Unsaved changes. Browser draft storage is unavailable; review and save before leaving.';
 }
 async function post(path) { return fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ manifest }) }); }
 async function validate() {
@@ -90,7 +97,8 @@ async function validate() {
       if (index !== undefined) link.addEventListener('click', () => { active = Number(index); renderAgents(); $('active-agent').focus(); });
       item.append(link); $('errors').append(item);
     }
-    $('export').disabled = !data.valid; renderPreview(); renderChanges();
+    if (document.querySelector('.workspace').hidden && !data.valid) $('json-error').textContent = (data.diagnostics ?? []).map(d => `${d.path || '/'}: ${d.message}`).join('\n');
+    $('export').disabled = !data.valid || rawEditing; renderPreview(); renderChanges();
   } catch (error) { if (current !== sequence) return; $('status').textContent = 'Cannot reach the local builder. Restart it to continue.'; $('status').parentElement.className = 'validation invalid'; $('export').disabled = true; }
 }
 function renderPreview() {
@@ -103,9 +111,10 @@ function renderChanges() {
   $('changes').replaceChildren();
   if (!result?.valid) { $('changes').append(element('p', 'Resolve the inline issues to compare configurations.')); return; }
   if (!result.changes.length) { $('changes').append(element('p', 'No changes since opening this workspace.')); return; }
+  const original = catalog.manifest?.project ?? {};
   for (const key of Object.keys(manifest.project)) {
-    if (JSON.stringify(catalog.manifest.project[key]) !== JSON.stringify(manifest.project[key])) {
-      const entry = element('div', undefined, 'change'); entry.append(element('strong', `Project ${key} changed`), element('pre', `Before\n${JSON.stringify(catalog.manifest.project[key], null, 2)}\n\nAfter\n${JSON.stringify(manifest.project[key], null, 2)}`)); $('changes').append(entry);
+    if (JSON.stringify(original[key]) !== JSON.stringify(manifest.project[key])) {
+      const entry = element('div', undefined, 'change'); entry.append(element('strong', `Project ${key} changed`), element('pre', `Before\n${JSON.stringify(original[key], null, 2)}\n\nAfter\n${JSON.stringify(manifest.project[key], null, 2)}`)); $('changes').append(entry);
     }
   }
   for (const change of result.changes) {
@@ -125,13 +134,39 @@ $('agent-id').addEventListener('input', () => { agent().id = $('agent-id').value
 $('add-agent').addEventListener('click', () => { let index = manifest.agents.length + 1; while (manifest.agents.some(a => a.id === `agent-${index}`)) index++; manifest.agents.push({ id: `agent-${index}`, modules: [] }); active = manifest.agents.length - 1; renderAgents(); changed(); $('agent-id').focus(); });
 $('remove-agent').addEventListener('click', () => { manifest.agents.splice(active, 1); active = Math.max(0, active - 1); renderAgents(); changed(); $('active-agent').focus(); });
 $('show-preview').addEventListener('click', () => inspect(false)); $('show-changes').addEventListener('click', () => inspect(true)); $('preview-agent').addEventListener('change', () => { $('preview').textContent = result.previews.find(a => a.id === $('preview-agent').value)?.instructions ?? ''; });
-$('apply-json').addEventListener('click', () => {
+function visualShape(next) {
+  const p = next?.project;
+  return p && ['id', 'title', 'question'].every(k => typeof p[k] === 'string') && ['scope', 'exclusions', 'stopConditions', 'allowedCapabilities'].every(k => Array.isArray(p[k]) && p[k].every(x => typeof x === 'string')) && p.limits && typeof p.limits === 'object' && Array.isArray(next.agents) && next.agents.every(a => typeof a?.id === 'string' && Array.isArray(a.modules) && a.modules.every(m => typeof m === 'string'));
+}
+function applyDraft(raw) {
   try {
-    const next = JSON.parse($('manifest-json').value);
-    // The visual controls require this shape; all actual contract rules remain in the shared validator.
-    if (!next?.project || !Array.isArray(next.agents) || !next.project.limits || !Array.isArray(next.project.allowedCapabilities) || next.agents.some(a => typeof a?.id !== 'string' || !Array.isArray(a.modules) || a.modules.some(m => typeof m !== 'string'))) throw new Error('Expected project, limits, allowedCapabilities and agents with string IDs and module arrays.');
-    manifest = next; active = 0; fillCharter(); renderAgents(); changed(); $('json-error').textContent = '';
-  } catch (error) { $('json-error').textContent = error.message; }
+    manifest = JSON.parse(raw.replace(/^\uFEFF/, '')); active = 0; rawEditing = false;
+    const visual = visualShape(manifest); document.querySelector('.workspace').hidden = !visual;
+    if (visual) { fillCharter(); renderAgents(); $('json-error').textContent = ''; }
+    else { $('manifest-editor').open = true; $('json-error').textContent = 'Fix the manifest shape here to enable visual controls. See validation below.'; }
+    sequence++; clearTimeout(timer); pending(); validate();
+  } catch (error) {
+    rawEditing = true; sequence++; clearTimeout(timer); $('export').disabled = true; document.querySelector('.workspace').hidden = true; $('manifest-editor').open = true; $('json-error').textContent = `Invalid JSON: ${error.message}. Correct it here or save a recovery draft.`; $('preview').textContent = 'Correct the JSON and apply the manifest to preview instructions.';
+  }
+}
+$('apply-json').addEventListener('click', () => { markDraft($('manifest-json').value); applyDraft(draftRaw); });
+$('manifest-json').addEventListener('input', () => { const raw = $('manifest-json').value; markDraft(raw); rawEditing = true; sequence++; clearTimeout(timer); pending(); $('status').textContent = 'Apply JSON edits before export.'; });
+window.addEventListener('beforeunload', event => { if (dirty && !storageOkay) { event.preventDefault(); event.returnValue = ''; } });
+async function draftRequest(path, value) {
+  const response = await fetch(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(value) });
+  const data = await response.json(); if (!response.ok) throw new Error(data.diagnostics?.map(d => d.message).join('; ') || data.error || 'Draft save failed'); return data;
+}
+$('review-draft').addEventListener('click', async () => {
+  const raw = draftRaw;
+  try {
+    const data = await draftRequest('/api/draft-preview', { raw, baseHash: catalog.baseHash }); if (raw !== draftRaw) return;
+    reviewToken = data.token; $('draft-review').hidden = false; $('draft-review').open = true; $('draft-target').textContent = `${data.path}. ${data.message} Unchanged lines omitted: ${data.unchangedLeadingLines} before, ${data.unchangedTrailingLines} after.`; $('draft-diff').textContent = data.diff; $('save-draft').disabled = false; $('draft-status').textContent = 'Review the manifest diff and destination, then explicitly save the draft.';
+  } catch (error) { $('draft-status').textContent = error.message; }
+});
+$('save-draft').addEventListener('click', async () => {
+  const raw = draftRaw; const token = reviewToken; $('save-draft').disabled = true;
+  try { const data = await draftRequest('/api/draft-save', { token }); if (raw === draftRaw) { dirty = false; $('draft-status').textContent = `${data.path}: ${data.message}`; } else $('draft-status').textContent = `Earlier draft saved to ${data.path}; newer edits remain unsaved.`; }
+  catch (error) { $('draft-status').textContent = error.message; }
 });
 $('export').addEventListener('click', async () => {
   $('export').disabled = true;
@@ -145,8 +180,13 @@ $('export').addEventListener('click', async () => {
 async function start() {
   try {
     const response = await fetch('/api/catalog'); if (!response.ok) throw new Error('Catalog unavailable'); catalog = await response.json(); manifest = structuredClone(catalog.manifest);
-    capabilities = [...new Set(catalog.modules.flatMap(m => m.capabilities).concat(manifest.project.allowedCapabilities))].sort();
-    $('core').textContent = catalog.core; $('catalog-errors').textContent = catalog.diagnostics.map(d => `${d.message}`).join('\n'); fillCharter(); renderAgents(); $('manifest-json').value = JSON.stringify(manifest, null, 2); await validate();
+    capabilities = [...new Set(catalog.modules.flatMap(m => m.capabilities))].sort();
+    $('core').textContent = catalog.core; $('catalog-errors').textContent = catalog.diagnostics.map(d => `${d.message}`).join('\n');
+    draftKey = `ramp-draft:${catalog.workspaceKey}`; draftRaw = catalog.raw;
+    $('draft-status').textContent = 'Opened project. Edits are recoverable in this browser; saving creates a separate project-local draft.';
+    try { const draft = JSON.parse(localStorage.getItem(draftKey)); if (typeof draft?.raw === 'string' && draft.raw !== catalog.raw) { draftRaw = draft.raw; dirty = true; $('draft-status').textContent = `Recovered unsaved browser draft.${draft.baseHash !== catalog.baseHash ? ' The opened file changed since this draft; review carefully.' : ''}`; } }
+    catch { storageOkay = false; }
+    $('manifest-json').value = draftRaw; applyDraft(draftRaw);
   } catch { $('status').textContent = 'Cannot load this workspace. Check the local server output.'; }
 }
 start();
