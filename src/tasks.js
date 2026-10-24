@@ -76,7 +76,7 @@ export function replayTasks(events, projectId, agentIds) {
 }
 
 export class TaskStore {
-  constructor(path, project, projectDirectory) { this.path = path; this.project = project; this.directory = projectDirectory; }
+  constructor(path, project, projectDirectory) { this.path = path; this.baseProject = project; this.project = project; this.directory = projectDirectory; }
   replay(events) { return replayTasks(events, this.project.manifest.project.id, this.project.agents.map(a => a.id)); }
   list() { return this.replay(readJournal(this.path).map(r => r.payload)); }
   submit(input) {

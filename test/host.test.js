@@ -6,6 +6,32 @@ import { join } from 'node:path';
 import { initializeProject } from '../src/scaffold.js';
 import { ReferenceHost } from '../src/host.js';
 import { fakeSourceTool, runFakeAgent } from '../src/fake-adapter.js';
+import { spawnSync } from 'node:child_process';
+import { REPO_ROOT } from '../src/protocol.js';
+import { configurationLock } from '../src/lockfile.js';
+
+test('CLI and host agree after chained ownership and persona swaps and a restart', () => {
+  const f = fixture();
+  writeFileSync(join(f.dir, 'evidence.json'), JSON.stringify({ artifactVersion: '0.1.0', projectId: f.host.project.manifest.project.id, synthetic: true, evidence: [], claims: [] }));
+  const request = { taskId: 'T-1', completedWork: ['Synthetic exercise'], openQuestions: ['Unverified'], nextAction: 'Review', conclusion: 'No finding', uncertainty: 'Synthetic', budgetUsage: { sources: 0, iterations: 0 }, evidenceFile: 'evidence.json', evidenceIds: [], sameUnderlyingAgent: true };
+  const first = f.host.checkpoint('scout', { ...request, toAgent: 'analyst' }); f.host.resume(first.id);
+  const cli = (...args) => {
+    const result = spawnSync(process.execPath, [join(REPO_ROOT, 'src/cli.js'), 'handoff', f.manifestPath, ...args], { cwd: f.dir, encoding: 'utf8' });
+    assert.equal(result.status, 0, result.stderr); return JSON.parse(result.stdout);
+  };
+  writeFileSync(join(f.dir, 'swap.json'), JSON.stringify({ ...request, fromAgent: 'analyst', toAgent: 'analyst', modules: ['roles/analyst', 'methods/evidence-first', 'personas/teaching-guide'] }));
+  const swap = cli('--create', join(f.dir, 'swap.json')); cli('--resume', swap.id);
+  const restarted = new ReferenceHost({ manifestPath: f.manifestPath, tools: f.tools });
+  const final = restarted.checkpoint('analyst', { ...request, toAgent: 'reviewer' });
+  const cliPreview = cli('--preview', final.id);
+  assert.deepEqual(cliPreview, restarted.handoffs.preview(final.id)); cli('--resume', final.id);
+  const again = new ReferenceHost({ manifestPath: f.manifestPath, tools: f.tools });
+  assert.match(again.assignment('reviewer', 'T-1').instructions, /Agent: reviewer/);
+  assert.ok(again.project.agents.find(a => a.id === 'analyst').modules.some(m => m.id === 'personas/teaching-guide'));
+  assert.deepEqual(configurationLock(again.project), final.destinationLock);
+  const changed = JSON.parse(readFileSync(f.manifestPath, 'utf8')); changed.project.allowedCapabilities = []; writeFileSync(f.manifestPath, JSON.stringify(changed));
+  assert.throws(() => new ReferenceHost({ manifestPath: f.manifestPath }), /forbidden capability|configuration changed/);
+});
 
 function fixture(sources = 1) {
   const dir = join(mkdtempSync(join(tmpdir(), 'ramp-host-')), 'project'); initializeProject(dir);

@@ -8,6 +8,7 @@ import { configurationLock, compareLock, stableJson } from './lockfile.js';
 import { appendJournal, readJournal } from './journal.js';
 import { artifactReference } from './tasks.js';
 import { BudgetStore } from './budgets.js';
+import { effectiveProject } from './effective-project.js';
 
 function must(ok, message) { if (!ok) throw new Error(message); }
 export class HandoffStore {
@@ -35,7 +36,9 @@ export class HandoffStore {
   }
   list() { return this.replay(readJournal(this.path).map(r => r.payload)); }
   append(event) { appendJournal(this.path, event, events => this.replay(events)); }
+  refresh() { this.project = effectiveProject(this.tasks.baseProject, this.directory); this.tasks.project = this.project; }
   create(input, actor = 'operator') {
+    this.refresh();
     try {
       const task = this.tasks.list().find(t => t.id === input.taskId);
       must(task && !['done', 'cancelled'].includes(task.status), 'Unknown or terminal checkpoint task');
@@ -73,6 +76,7 @@ export class HandoffStore {
     }
   }
   preview(id) {
+    this.refresh();
     const history = this.list(); const c = history.checkpoints.find(c => c.id === id);
     must(c && !history.resumed.includes(id), 'Unknown or already resumed checkpoint');
     const task = this.tasks.list().find(t => t.id === c.taskId);

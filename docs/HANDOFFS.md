@@ -1,5 +1,11 @@
 # Handoff checkpoints and module swaps
 
+## Chained configurations
+
+The CLI handoff store and reference host reconstruct effective configurations from the disk manifest plus **every resumed checkpoint in journal order**. Each checkpoint locks the complete source/destination configuration, including earlier swaps. Restart replays the same chain and rejects changed configurations. The disk manifest/lock remain the baseline: ordinary `compose` describes that baseline; handoff previews describe the effective destination.
+
+The Phase 0 investigation found that the original CLI used the baseline for subsequent checkpoints after a swap. Shared reconstruction fixes this mismatch. The regression covers scout → analyst, an analyst persona swap through the CLI, analyst → reviewer through host/CLI, and restart, comparing complete destination locks and rejecting changed permissions. No research findings are involved.
+
 The `handoff <ramp.json>` command lists checkpoints. Use `--create <request.json>`, `--preview <checkpoint-id>`, or `--resume <checkpoint-id>` for one operation at a time. Checkpoints share the task journal: recording a resume and transferring task ownership occur in one validated append. Failed creation attempts are audit events and never change the task or evidence. Checkpoint IDs are returned on creation.
 
 The request contains taskId, fromAgent, toAgent, completedWork/openQuestions arrays, nextAction, conclusion, uncertainty, budgetUsage (`sources`, `iterations`), a project-relative evidenceFile, evidenceIds, and sameUnderlyingAgent. Optional modules explicitly selects the destination's new module set; otherwise the destination configuration is used. Optional artifacts use the task artifact reference format. `test/handoffs.test.js` is an executable synthetic example of a valid scout→analyst/persona swap and rejected swaps, including an inspectable rejected audit event; run `node --test test/handoffs.test.js`.

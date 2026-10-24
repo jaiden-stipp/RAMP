@@ -1,11 +1,12 @@
 import { dirname, join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { loadProject, configureAgent, compose, sha256 } from './protocol.js';
-import { assertLocked, compareLock, lockPath, stableJson } from './lockfile.js';
+import { loadProject, compose, sha256 } from './protocol.js';
+import { assertLocked, lockPath, stableJson } from './lockfile.js';
 import { TaskStore } from './tasks.js';
 import { HandoffStore } from './handoffs.js';
 import { BudgetStore, sourceIdentity } from './budgets.js';
 import { appendJournal, readJournal } from './journal.js';
+import { effectiveProject } from './effective-project.js';
 
 export class HostError extends Error {
   constructor(code, message) { super(message); this.code = code; }
@@ -27,18 +28,13 @@ export class ReferenceHost {
     if (this.locked) assertLocked(base, lockPath(this.manifestPath));
     this.tasks = new TaskStore(join(this.directory, '.ramp/tasks.jsonl'), base, this.directory);
     const events = readJournal(this.tasks.path).map(r => r.payload);
-    const checkpoints = new Map(events.filter(e => e.type === 'checkpoint' && e.operation === 'created').map(e => [e.checkpoint.id, e.checkpoint]));
-    let effective = base;
-    for (const event of events.filter(e => e.handoffId)) {
-      const checkpoint = checkpoints.get(event.handoffId);
-      requireHost(checkpoint && compareLock(checkpoint.sourceLock, effective).length === 0, 'HOST_CONFIG_CHANGED', 'A resumed checkpoint no longer matches its source configuration');
-      effective = configureAgent(effective, checkpoint.toAgent, checkpoint.nextModules, this.directory);
-      requireHost(compareLock(checkpoint.destinationLock, effective).length === 0, 'HOST_CONFIG_CHANGED', 'Resumed modules differ from the recorded destination');
-    }
+    let effective;
+    try { effective = effectiveProject(base, this.directory, events); }
+    catch (error) { throw new HostError('HOST_CONFIG_CHANGED', error.message); }
     this.project = effective; this.tasks.project = effective;
     this.handoffs = new HandoffStore(this.tasks);
     this.budgets = new BudgetStore(join(this.directory, '.ramp/budgets.jsonl'), effective.manifest.project.id, effective.manifest.project.limits, effective.agents.map(a => a.id));
-    this.tasks.list(); this.budgets.snapshot();
+    this.handoffs.list(); this.budgets.snapshot();
   }
   record(type, data) { appendJournal(this.path, { type, projectId: this.project.manifest.project.id, ...data }); }
   task(agentId, taskId) {
