@@ -6,7 +6,7 @@ import { diagnosticsOf } from './validation.js';
 import { initializeProject } from './scaffold.js';
 import { assertLocked, compareLock, lockPath, writeLock } from './lockfile.js';
 import { readJson } from './protocol.js';
-import { validateEvidence, evidenceMarkdown } from './evidence.js';
+import { validateEvidence, evidenceMarkdown, evidenceAssessments } from './evidence.js';
 import { TaskStore } from './tasks.js';
 import { join } from 'node:path';
 import { HandoffStore } from './handoffs.js';
@@ -20,8 +20,8 @@ const usage = `Usage:
   node src/cli.js compose <ramp.json> [--agent <id>] [--out <new-bundle.md>] [--locked]
   node src/cli.js lock <ramp.json> [--update]
   node src/cli.js diff <ramp.json>
-  node src/cli.js evidence-validate <evidence.json> [--json]
-  node src/cli.js evidence-export <evidence.json>
+  node src/cli.js evidence-validate <evidence.json> [--json] [--reviews <reviews.json>]
+  node src/cli.js evidence-export <evidence.json> [--reviews <reviews.json>]
   node src/cli.js tasks <ramp.json> [--event <task-event.json>]
   node src/cli.js handoff <ramp.json> [--create <request.json> | --preview <id> | --resume <id>]
   node src/cli.js budgets <ramp.json> [--event <budget-event.json>]
@@ -43,7 +43,7 @@ try {
   } else {
     const [command, path, ...rawOptions] = args;
     if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export', 'tasks', 'handoff', 'budgets', 'status', 'audit'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
-    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {}, tasks: { '--event': true }, handoff: { '--create': true, '--preview': true, '--resume': true }, budgets: { '--event': true }, status: { '--json': false, '--evidence': true }, audit: { '--json': false, '--evidence': true } }[command];
+    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false, '--reviews': true }, 'evidence-export': { '--reviews': true }, tasks: { '--event': true }, handoff: { '--create': true, '--preview': true, '--resume': true }, budgets: { '--event': true }, status: { '--json': false, '--evidence': true }, audit: { '--json': false, '--evidence': true } }[command];
     const options = {};
     for (let index = 0; index < rawOptions.length; index++) {
       const name = rawOptions[index];
@@ -57,7 +57,9 @@ try {
       if (!report.integrityPassed) process.exitCode = 1;
     } else if (command.startsWith('evidence-')) {
       const bundle = validateEvidence(readJson(resolve(path)).value, resolve(path));
-      console.log(command === 'evidence-export' ? evidenceMarkdown(bundle) : jsonMode ? JSON.stringify({ valid: true, diagnostics: [] }) : `Valid evidence bundle: ${bundle.projectId}`);
+      const reviews = options['--reviews'] ? readJson(resolve(options['--reviews'])).value : undefined;
+      const claims = evidenceAssessments(bundle, reviews);
+      console.log(command === 'evidence-export' ? evidenceMarkdown(bundle, reviews) : jsonMode ? JSON.stringify({ valid: true, structuralOnly: true, diagnostics: [], claims }) : `Structurally valid evidence: ${bundle.projectId}. Source support: ${claims.filter(c => c.sourceSupport === 'not_reviewed').length} not reviewed; ${claims.filter(c => c.sourceSupport !== 'not_reviewed').length} with recorded assessments. Reviewer assertions do not prove factual accuracy.`);
     } else if (command === 'init') {
       const result = initializeProject(path);
       console.log(`Initialized RAMP project in ${result.directory}. Edit ramp.json, then validate and compose; see README.md.`);

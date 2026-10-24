@@ -1,0 +1,26 @@
+{
+  "reviewVersion": "1",
+  "projectId": "synthetic-traceability-demo",
+  "evidenceHash": "31263e98406d599b0c9ce8691c39d6d985fcf2048afb9b3e5c5176db777c123c",
+  "reviews": [
+    {
+      "id": "R-synthetic-control",
+      "claimId": "C-001",
+      "claimHash": "79ddfeae5224d86fe600548a54bd1025195b94f95fa48b9caa26d8132c790f4b",
+      "assessment": "unsupported",
+      "reviewer": {
+        "type": "model",
+        "identity": "Synthetic model fixture; no actual source-support review"
+      },
+      "reviewedAt": "2026-10-24T07:00:00Z",
+      "passages": [
+        {
+          "evidenceId": "E-001",
+          "location": "entry 1"
+        }
+      ],
+      "rationale": "Invented negative-control assessment: linked synthetic metadata does not establish a universal guarantee.",
+      "uncertainty": "Test fixture only; not an actual human or model review."
+    }
+  ]
+}

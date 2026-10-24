@@ -1,9 +1,9 @@
-import { validateEvidence } from './evidence.js';
+import { validateEvidence, evidenceAssessments } from './evidence.js';
 
 const HANDOFF_FIELDS = ['projectId', 'taskId', 'task', 'fromAgent', 'toAgent', 'sourceLock', 'destinationLock', 'completedWork', 'openQuestions', 'nextAction', 'conclusion', 'uncertainty', 'budgetUsage', 'evidence', 'evidenceIds'];
 const PROVENANCE_FIELDS = ['id', 'source', 'title', 'author', 'publisher', 'published', 'accessed', 'location', 'limitations', 'status'];
 const ratio = (passed, total) => ({ passed, total, score: total ? passed / total : null });
-export function evaluateRecord({ run, evidence, expected, brief, humanJudgments = null, modelJudgments = null }) {
+export function evaluateRecord({ run, evidence, expected, brief, humanJudgments = null, modelJudgments = null, reviews }) {
   if (!run || run.status === 'not_run') return { status: 'not_run', metrics: null, reason: run?.reason ?? 'No recorded condition' };
   let diagnostics = [];
   try { validateEvidence(evidence); } catch (e) { diagnostics = e.diagnostics ?? [{ message: e.message }]; }
@@ -14,7 +14,10 @@ export function evaluateRecord({ run, evidence, expected, brief, humanJudgments 
   const preserved = expected.uncertaintyMarkers.filter(marker => String(context.uncertainty ?? '').includes(marker)).length;
   const questions = expected.openQuestions.filter(q => context.openQuestions?.includes(q)).length;
   const sources = expected.evidenceIds.filter(id => context.evidenceIds?.includes(id) && context.evidence?.evidence?.some(e => e.id === id)).length;
-  return { status: 'evaluated', diagnostics, metrics: {
+  let sourceSupportReview;
+  try { sourceSupportReview = { status: 'recorded_assertions_only', claims: evidenceAssessments(evidence, reviews), factualVerification: 'not_checked' }; }
+  catch (error) { sourceSupportReview = { status: 'not_checked', diagnostics: error.diagnostics ?? [{ message: error.message }], factualVerification: 'not_checked' }; }
+  return { status: 'evaluated', diagnostics, sourceSupportReview, metrics: {
     evidenceContractValid: diagnostics.length === 0,
     citationReferenceResolution: ratio(refs.filter(r => known.has(r)).length, refs.length),
     provenanceCompleteness: ratio(provenanceCount, (evidence?.evidence?.length ?? 0) * PROVENANCE_FIELDS.length),

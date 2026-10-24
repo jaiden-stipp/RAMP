@@ -27,6 +27,6 @@ export function evaluatePilot() {
     if (c.mutation === 'unsupported-claim') input.evidence.claims[0].text = 'Provenance records guarantee that every claim is true.';
     return { id: c.id, deliberatelyMutated: true, result: evaluateRecord(input) };
   });
-  return { evaluationVersion: '1', recordedResearchConditions: 2, repeatedTrialsPerCondition: 1, humanReviewPerformed: false, causalImprovementEstablished: false, results, controls };
+  return { evaluationVersion: '2', recordedResearchConditions: 2, repeatedTrialsPerCondition: 1, humanReviewPerformed: false, causalImprovementEstablished: false, results, controls };
 }
 if (process.argv[1] === fileURLToPath(import.meta.url)) console.log(JSON.stringify(evaluatePilot(), null, 2));

@@ -1,5 +1,5 @@
 {
-  "evaluationVersion": "1",
+  "evaluationVersion": "2",
   "recordedResearchConditions": 2,
   "repeatedTrialsPerCondition": 1,
   "humanReviewPerformed": false,
@@ -8,6 +8,40 @@
     "single-agent": {
       "status": "evaluated",
       "diagnostics": [],
+      "sourceSupportReview": {
+        "status": "recorded_assertions_only",
+        "claims": [
+          {
+            "id": "C-001",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-002",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-003",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-004",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          }
+        ],
+        "factualVerification": "not_checked"
+      },
       "metrics": {
         "evidenceContractValid": true,
         "citationReferenceResolution": {
@@ -115,6 +149,40 @@
     "separate-agents": {
       "status": "evaluated",
       "diagnostics": [],
+      "sourceSupportReview": {
+        "status": "recorded_assertions_only",
+        "claims": [
+          {
+            "id": "C-001",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-002",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-003",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          },
+          {
+            "id": "C-004",
+            "referenceLinkage": "linked_accessible",
+            "sourceSupport": "not_reviewed",
+            "conflictingAssessments": false,
+            "assessments": []
+          }
+        ],
+        "factualVerification": "not_checked"
+      },
       "metrics": {
         "evidenceContractValid": true,
         "citationReferenceResolution": {
@@ -250,6 +318,18 @@
             "message": "location is required"
           }
         ],
+        "sourceSupportReview": {
+          "status": "not_checked",
+          "diagnostics": [
+            {
+              "code": "SCHEMA_REQUIRED",
+              "file": "<evidence>",
+              "path": "/evidence/0/location",
+              "message": "location is required"
+            }
+          ],
+          "factualVerification": "not_checked"
+        },
         "metrics": {
           "evidenceContractValid": false,
           "citationReferenceResolution": {
@@ -294,6 +374,40 @@
       "result": {
         "status": "evaluated",
         "diagnostics": [],
+        "sourceSupportReview": {
+          "status": "recorded_assertions_only",
+          "claims": [
+            {
+              "id": "C-001",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-002",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-003",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-004",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            }
+          ],
+          "factualVerification": "not_checked"
+        },
         "metrics": {
           "evidenceContractValid": true,
           "citationReferenceResolution": {
@@ -338,6 +452,40 @@
       "result": {
         "status": "evaluated",
         "diagnostics": [],
+        "sourceSupportReview": {
+          "status": "recorded_assertions_only",
+          "claims": [
+            {
+              "id": "C-001",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-002",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-003",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-004",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            }
+          ],
+          "factualVerification": "not_checked"
+        },
         "metrics": {
           "evidenceContractValid": true,
           "citationReferenceResolution": {
@@ -382,6 +530,40 @@
       "result": {
         "status": "evaluated",
         "diagnostics": [],
+        "sourceSupportReview": {
+          "status": "recorded_assertions_only",
+          "claims": [
+            {
+              "id": "C-001",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-002",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-003",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-004",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            }
+          ],
+          "factualVerification": "not_checked"
+        },
         "metrics": {
           "evidenceContractValid": true,
           "citationReferenceResolution": {
@@ -426,6 +608,40 @@
       "result": {
         "status": "evaluated",
         "diagnostics": [],
+        "sourceSupportReview": {
+          "status": "recorded_assertions_only",
+          "claims": [
+            {
+              "id": "C-001",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-002",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-003",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            },
+            {
+              "id": "C-004",
+              "referenceLinkage": "linked_accessible",
+              "sourceSupport": "not_reviewed",
+              "conflictingAssessments": false,
+              "assessments": []
+            }
+          ],
+          "factualVerification": "not_checked"
+        },
         "metrics": {
           "evidenceContractValid": true,
           "citationReferenceResolution": {

@@ -1,5 +1,7 @@
 # Pilot rubric v1
 
+Report format v2 adds `sourceSupportReview`: per-claim reference linkage and optional bound review-sidecar assertions, with factualVerification always not_checked. Missing sidecars produce not_reviewed; older aggregate human/model judgments remain separately reported and are not silently converted into bound claim reviews. Existing metric denominators, recorded runs and research outcomes are unchanged. The saved evaluation JSON was regenerated offline under v2; this is a report-format update, not a new experiment. See the additive review-v1 contract in `docs/EVIDENCE.md`.
+
 Do not combine these axes into a single accuracy score. The evaluator performs no retrieval or model calls. Missing recorded conditions yield not_run with null metrics. A zero-denominator ratio is null, not 100%. Missing required record fields reduce completeness and fail the appropriate schema check. Null metadata counts as explicitly recorded unknown information, not as a known author/date.
 
 | Axis | Automated measurement | What it does not establish |
