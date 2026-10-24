@@ -13,7 +13,17 @@ test('packed local install exposes ramp outside checkout and projects survive mo
   const npm = (cwd, ...args) => { const r = spawnSync(process.execPath, [npmPath, ...args], { cwd, encoding: 'utf8', timeout: 60000 }); assert.equal(r.status, 0, `${r.stdout}\n${r.stderr}\n${r.error ?? ''}`); return r.stdout; };
   const packed = JSON.parse(npm(REPO_ROOT, 'pack', '--json', '--ignore-scripts', '--pack-destination', dir));
   const install = join(dir, 'clean installation'); mkdirSync(install);
-  npm(install, 'install', '--offline', '--ignore-scripts', '--no-audit', '--no-fund', join(dir, packed[0].filename));
+  // npm ci caches pinned tarballs, not necessarily registry packuments. Seed a consumer
+  // lock with those exact resolved dependencies so this test needs no metadata/network.
+  const sourcePackage = JSON.parse(readFileSync(join(REPO_ROOT, 'package.json'), 'utf8'));
+  const sourceLock = JSON.parse(readFileSync(join(REPO_ROOT, 'package-lock.json'), 'utf8'));
+  const consumer = { name: 'ramp-installation-test', version: '1.0.0', private: true, dependencies: { 'ramp-protocol': `file:../${packed[0].filename}` } };
+  const packages = Object.fromEntries(Object.entries(sourceLock.packages).filter(([name]) => name !== ''));
+  packages[''] = { name: consumer.name, version: consumer.version, dependencies: consumer.dependencies };
+  packages['node_modules/ramp-protocol'] = { version: sourcePackage.version, resolved: `file:../${packed[0].filename}`, integrity: packed[0].integrity, dependencies: sourcePackage.dependencies, bin: sourcePackage.bin, engines: sourcePackage.engines };
+  writeFileSync(join(install, 'package.json'), JSON.stringify(consumer));
+  writeFileSync(join(install, 'package-lock.json'), JSON.stringify({ name: consumer.name, version: consumer.version, lockfileVersion: 3, requires: true, packages }));
+  npm(install, 'ci', '--offline', '--ignore-scripts', '--no-audit', '--no-fund');
   const command = (...args) => npm(install, 'exec', '--offline', '--', 'ramp', ...args);
   const project = join(dir, 'first research'); command('init', project);
   const instructions = readFileSync(join(project, 'README.md'), 'utf8');
