@@ -1,3 +1,4 @@
+import { selectModule } from './selection.js';
 const $ = id => document.getElementById(id);
 let manifest, catalog, active = 0, category = 'roles', result, sequence = 0, timer;
 let capabilities = [];
@@ -36,7 +37,11 @@ function renderAgents() {
 }
 function toggleModule(id, checked) {
   if (!agent()) return;
-  agent().modules = checked ? [...agent().modules, id] : agent().modules.filter(x => x !== id);
+  agent().modules = selectModule(agent().modules, id, checked);
+  for (const input of $('modules').querySelectorAll('input[data-module]')) {
+    input.checked = agent().modules.includes(input.dataset.module);
+    input.closest('.module').classList.toggle('selected', input.checked);
+  }
   renderAssembly(); changed();
 }
 function renderModules() {
@@ -44,7 +49,7 @@ function renderModules() {
   for (const module of catalog.modules.filter(m => m.kind === category)) {
     const selected = agent()?.modules.includes(module.id);
     const card = element('article', undefined, `module${selected ? ' selected' : ''}`);
-    const label = element('label'); const input = document.createElement('input'); input.type = 'checkbox'; input.checked = Boolean(selected); input.disabled = !agent(); input.setAttribute('aria-label', `Select ${module.id}`);
+    const label = element('label'); const input = document.createElement('input'); input.type = category === 'roles' ? 'radio' : 'checkbox'; input.name = `${category}-${active}`; input.dataset.module = module.id; input.checked = Boolean(selected); input.disabled = !agent(); input.setAttribute('aria-label', `Select ${module.id}`);
     input.addEventListener('change', () => { card.classList.toggle('selected', input.checked); toggleModule(module.id, input.checked); });
     label.append(input, document.createTextNode(module.id.split('/')[1]));
     const details = element('details'); details.append(element('summary', 'Dependencies, permissions & instructions'));

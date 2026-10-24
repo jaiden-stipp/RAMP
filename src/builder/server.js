@@ -6,7 +6,7 @@ import { REPO_ROOT } from '../protocol.js';
 import { diagnosticsOf } from '../validation.js';
 import { createBuilderService } from './service.js';
 
-const assets = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/style.css', ['style.css', 'text/css']]]);
+const assets = new Map([['/', ['index.html', 'text/html']], ['/app.js', ['app.js', 'text/javascript']], ['/selection.js', ['selection.js', 'text/javascript']], ['/style.css', ['style.css', 'text/css']]]);
 const directory = dirname(fileURLToPath(import.meta.url));
 const maximumBody = 1024 * 1024;
 
