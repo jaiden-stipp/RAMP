@@ -1,0 +1,6 @@
+{
+  "id": "outputs/comparison-matrix", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "outputs",
+  "summary": "Deliver an evidence-backed comparison that preserves incomparable or missing data.",
+  "instructions": ["Include disposition, decision context, alternatives, criteria/weights and their source, a comparison matrix, evidence references, sensitivity/assumptions, contrary evidence, review, and remaining questions.", "Each matrix entry identifies the source/location, comparable conditions, and uncertainty; use unknown rather than a fabricated score when data is unavailable.", "Rank only when the criteria/weights and evidence justify it. Otherwise explain the unranked tradeoffs and the next decision-relevant evidence needed."],
+  "requires": ["methods/evidence-first", "methods/tradeoff-comparison"], "excludes": [], "capabilities": ["artifact.write"]
+}

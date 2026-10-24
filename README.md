@@ -71,6 +71,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Handoff checkpoints](docs/HANDOFFS.md) and [shared budgets](docs/BUDGETS.md): resumable context, module swaps, and project-wide reservations.
 - [Recorded research pilot](examples/pilot-citation-reliability/README.md): actual source review, separate model contexts, preserved failures, and an offline evaluation rubric/report. It does not establish a general performance advantage.
 - [Reference host adapter](docs/HOSTS.md): capability/tool mediation, budgets, cancellation, checkpoints, and a deterministic fake-agent example without API keys.
+- [Research recipes](recipes/README.md): scoped literature review, technical feasibility, alternative comparison, and interchangeable method/persona/output modules.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 

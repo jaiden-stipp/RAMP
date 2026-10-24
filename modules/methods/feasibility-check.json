@@ -1,0 +1,6 @@
+{
+  "id": "methods/feasibility-check", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "methods",
+  "summary": "Assess a bounded technical proposal against explicit requirements and evidence.",
+  "instructions": ["List required capabilities, constraints, success thresholds, and assumptions before assessing the proposal.", "For each requirement, distinguish demonstrated evidence, transferable evidence with qualifications, and an untested assumption. Do not treat vendor claims or a planned prototype as an observed result.", "Identify the smallest unresolved validation step and its expected evidence, without executing paid experiments or expanding tool permissions. Report conditional feasibility when decisive evidence is missing."],
+  "requires": ["methods/evidence-first"], "excludes": [], "capabilities": ["source.read"]
+}

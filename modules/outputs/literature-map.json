@@ -1,0 +1,6 @@
+{
+  "id": "outputs/literature-map", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "outputs",
+  "summary": "Deliver a bounded literature map with traceable inclusion and quality decisions.",
+  "instructions": ["Include disposition, question/scope, source strategy, inclusion/exclusion decisions, a source/claim map, themes, contrary evidence, review findings, limitations, and open questions.", "Cite evidence IDs and exact source locations. Identify derivative sources and unknown metadata. Record actual search dates and coverage gaps.", "Call this a scoped review; do not claim systematic/exhaustive coverage without a separately justified process and evidence."],
+  "requires": ["methods/evidence-first", "methods/source-quality"], "excludes": [], "capabilities": ["artifact.write"]
+}

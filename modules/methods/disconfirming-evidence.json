@@ -1,0 +1,6 @@
+{
+  "id": "methods/disconfirming-evidence", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "methods",
+  "summary": "Actively test the working explanation against contrary evidence.",
+  "instructions": ["State the working explanation and what observation would weaken or overturn it before seeking more evidence.", "Search within the approved source/cycle budget for credible contrary evidence and alternative explanations. Record search gaps and negative findings.", "Preserve contradictions in the ledger and brief. Absence of found contrary evidence is not proof that none exists."],
+  "requires": ["methods/evidence-first"], "excludes": [], "capabilities": ["source.read"]
+}

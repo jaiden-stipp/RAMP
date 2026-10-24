@@ -1,0 +1,17 @@
+{
+  "protocolVersion": "0.1.0",
+  "project": {
+    "id": "alternative-comparison", "title": "Alternative comparison recipe",
+    "question": "How do up to three declared approaches compare under the decision-maker's explicit criteria and assumptions?",
+    "scope": ["Two or three named alternatives selected before scoring", "Common criteria and justified weights, or an unranked comparison", "Comparable evidence and sensitivity to assumptions"],
+    "exclusions": ["Invented scores or measurements", "Treating missing data as zero", "Unjustified universal rankings"],
+    "allowedCapabilities": ["source.read", "artifact.write"], "limits": { "maxSources": 12, "maxIterations": 3 },
+    "stopConditions": ["Deliver a reviewed comparison matrix with evidence and uncertainty", "Keep alternatives unranked when justified weights or comparable evidence are missing"]
+  },
+  "agents": [
+    { "id": "scout", "modules": ["roles/scout", "methods/evidence-first", "methods/source-quality"] },
+    { "id": "analyst", "modules": ["roles/analyst", "methods/evidence-first", "methods/tradeoff-comparison", "methods/disconfirming-evidence", "personas/concise-analyst"] },
+    { "id": "reviewer", "modules": ["roles/reviewer", "methods/evidence-first", "methods/tradeoff-comparison"] },
+    { "id": "synthesist", "modules": ["roles/synthesist", "methods/evidence-first", "methods/tradeoff-comparison", "outputs/comparison-matrix", "personas/teaching-guide"] }
+  ]
+}

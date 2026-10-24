@@ -1,0 +1,17 @@
+{
+  "protocolVersion": "0.1.0",
+  "project": {
+    "id": "scoped-literature-review", "title": "Scoped literature review recipe",
+    "question": "What evidence supports the project's explicitly chosen research question, and where do findings disagree?",
+    "scope": ["A question and inclusion criteria selected before collection", "At most twelve inspectable sources", "Source quality, dependence, and contrary findings"],
+    "exclusions": ["Claims of exhaustive/systematic coverage", "Uncited conclusions", "Invented search results"],
+    "allowedCapabilities": ["source.read", "artifact.write"], "limits": { "maxSources": 12, "maxIterations": 3 },
+    "stopConditions": ["Deliver a literature map with evidence IDs, inclusion decisions, review, and gaps", "Stop new acquisition at the budget ceiling and report a partial result"]
+  },
+  "agents": [
+    { "id": "scout", "modules": ["roles/scout", "methods/evidence-first", "methods/source-quality"] },
+    { "id": "analyst", "modules": ["roles/analyst", "methods/evidence-first", "methods/source-quality", "methods/disconfirming-evidence", "personas/concise-analyst"] },
+    { "id": "reviewer", "modules": ["roles/reviewer", "methods/evidence-first", "methods/disconfirming-evidence"] },
+    { "id": "synthesist", "modules": ["roles/synthesist", "methods/evidence-first", "methods/source-quality", "outputs/literature-map", "personas/concise-analyst"] }
+  ]
+}

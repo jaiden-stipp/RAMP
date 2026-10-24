@@ -1,0 +1,6 @@
+{
+  "id": "methods/tradeoff-comparison", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "methods",
+  "summary": "Compare a small declared set of alternatives on common criteria.",
+  "instructions": ["Declare alternatives, decision context, common criteria, and any stakeholder-supplied weights before scoring.", "For each alternative/criterion, cite evidence, retain unknowns, and use comparable conditions and units. Never convert missing data into a zero score or invent a measurement.", "Show sensitivity to assumptions/weights and explain dominated, incomparable, or tied options. Without justified weights or sufficient evidence, provide an unranked comparison and state what would resolve the decision."],
+  "requires": ["methods/evidence-first"], "excludes": [], "capabilities": ["source.read"]
+}

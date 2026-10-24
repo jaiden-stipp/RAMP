@@ -1,0 +1,6 @@
+{
+  "id": "methods/source-quality", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "methods",
+  "summary": "Appraise source relevance, provenance, limitations, and independence.",
+  "instructions": ["For every material source, record authority, publication status, date/version, relevance to the precise claim, and important limitations.", "Prefer directly inspectable original evidence where available. Identify derivative or same-family sources rather than counting them as independent corroboration.", "Distinguish a source's stated purpose, a measured result, and an analyst inference. Unknown metadata or unavailable passages remain gaps."],
+  "requires": ["methods/evidence-first"], "excludes": [], "capabilities": ["source.read"]
+}

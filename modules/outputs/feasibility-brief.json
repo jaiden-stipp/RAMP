@@ -1,0 +1,6 @@
+{
+  "id": "outputs/feasibility-brief", "version": "0.1.0", "protocolVersion": "0.1.0", "kind": "outputs",
+  "summary": "Deliver requirement-by-requirement feasibility evidence and unresolved tests.",
+  "instructions": ["Include disposition, proposal/constraints, requirement/evidence table, demonstrated results versus assumptions, failure modes, contrary evidence, review, and unresolved validation steps.", "For each feasibility conclusion, cite a precise evidence location and the conditions under which it applies. State unknown thresholds or untested claims explicitly.", "Give a conditional conclusion when evidence is incomplete. Proposed experiments are plans, not completed work, and require appropriate authorization before execution."],
+  "requires": ["methods/evidence-first", "methods/feasibility-check"], "excludes": [], "capabilities": ["artifact.write"]
+}
