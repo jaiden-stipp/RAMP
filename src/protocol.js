@@ -151,7 +151,9 @@ export function loadProject(manifestPath, root = REPO_ROOT) {
   return { manifest, manifestHash: sha256(raw), core, coreHash: sha256(core), agents };
 }
 
-export function compose(project) {
+export function compose(project, agentId) {
+  const agents = agentId === undefined ? project.agents : project.agents.filter(agent => agent.id === agentId);
+  requireThat(agents.length > 0, `Unknown agent: ${agentId}. Available agents: ${project.agents.map(a => a.id).join(', ')}`);
   const p = project.manifest.project;
   const lines = [
     '# RAMP research agent instructions', '',
@@ -172,7 +174,7 @@ export function compose(project) {
     `Shared limits: ${p.limits.maxSources} sources; ${p.limits.maxIterations} research iterations.`, '',
     '### Stop and completion conditions', '', ...p.stopConditions.map(item => `- ${item}`), ''
   ];
-  for (const agent of project.agents) {
+  for (const agent of agents) {
     lines.push(`## Agent: ${agent.id}`, '', 'Apply the shared core and charter plus the following modules. Preserve evidence and record a handoff before changing this configuration.', '');
     for (const module of agent.modules) {
       lines.push(`### ${module.id} @ ${module.version}`, '', module.summary, '', `SHA-256: ${module.hash}`, '', ...module.instructions.map(item => `- ${item}`), '');

@@ -2,32 +2,50 @@ import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { compose, loadProject } from './protocol.js';
 import { diagnosticsOf } from './validation.js';
+import { initializeProject } from './scaffold.js';
 
-const usage = 'Usage: node src/cli.js <validate|compose> <ramp.json> [--out <bundle.md>] [--json (validate only)]';
-const jsonMode = process.argv.includes('--json');
+const usage = `Usage:
+  node src/cli.js init <new-directory>
+  node src/cli.js validate <ramp.json> [--json]
+  node src/cli.js compose <ramp.json> [--agent <id>] [--out <new-bundle.md>]
+  node src/cli.js --help
 
+init refuses existing directories. compose refuses existing output files.
+Composition produces instructions; it does not launch agents.`;
+const args = process.argv.slice(2);
+const jsonMode = args.includes('--json');
 try {
-  const [command, path, ...rawOptions] = process.argv.slice(2);
-  if (jsonMode && command !== 'validate') throw new Error(usage);
-  if (rawOptions.filter(x => x === '--json').length > 1) throw new Error(usage);
-  const options = rawOptions.filter(x => x !== '--json');
-  if (!['validate', 'compose'].includes(command) || !path) throw new Error(usage);
-  const validOutputOption = command === 'compose' && options.length === 2 && options[0] === '--out' && options[1].trim().length > 0;
-  if (options.length && !validOutputOption) throw new Error(usage);
-  const manifestPath = resolve(path);
-  if (validOutputOption && resolve(options[1]) === manifestPath) throw new Error('Output must not overwrite the project manifest');
-  const project = loadProject(manifestPath);
-  if (command === 'validate') {
-    console.log(jsonMode ? JSON.stringify({ valid: true, project: project.manifest.project.id, diagnostics: [] }) : `Valid RAMP project: ${project.manifest.project.id} (${project.agents.length} agents)`);
+  if (args.length === 1 && ['--help', '-h', 'help'].includes(args[0])) {
+    console.log(usage);
   } else {
-    const output = compose(project);
-    if (validOutputOption) {
-      const outputPath = resolve(options[1]);
-      mkdirSync(dirname(outputPath), { recursive: true });
-      writeFileSync(outputPath, output, { encoding: 'utf8', flag: 'wx' });
-      console.log(`Wrote ${outputPath}`);
+    const [command, path, ...rawOptions] = args;
+    if (!['init', 'validate', 'compose'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
+    const accepted = { init: {}, validate: { '--json': false }, compose: { '--agent': true, '--out': true } }[command];
+    const options = {};
+    for (let index = 0; index < rawOptions.length; index++) {
+      const name = rawOptions[index];
+      if (!Object.hasOwn(accepted, name) || Object.hasOwn(options, name)) throw new Error(usage);
+      options[name] = accepted[name] ? rawOptions[++index] : true;
+      if (accepted[name] && (!options[name]?.trim() || options[name].startsWith('--'))) throw new Error(usage);
+    }
+    if (command === 'init') {
+      const result = initializeProject(path);
+      console.log(`Initialized RAMP project in ${result.directory}. Edit ramp.json, then validate and compose; see README.md.`);
     } else {
-      process.stdout.write(output);
+      const manifestPath = resolve(path);
+      if (options['--out'] && resolve(options['--out']) === manifestPath) throw new Error('Output must not overwrite the project manifest');
+      const project = loadProject(manifestPath);
+      if (command === 'validate') {
+        console.log(jsonMode ? JSON.stringify({ valid: true, project: project.manifest.project.id, diagnostics: [] }) : `Valid RAMP project: ${project.manifest.project.id} (${project.agents.length} agents)`);
+      } else {
+        const output = compose(project, options['--agent']);
+        if (options['--out']) {
+          const outputPath = resolve(options['--out']);
+          mkdirSync(dirname(outputPath), { recursive: true });
+          writeFileSync(outputPath, output, { encoding: 'utf8', flag: 'wx' });
+          console.log(`Wrote ${outputPath}`);
+        } else process.stdout.write(output);
+      }
     }
   }
 } catch (error) {

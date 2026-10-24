@@ -43,6 +43,8 @@ The example asks how a small research team can keep findings traceable across ag
 
 ## Configure a project
 
+Create a new directory with `node src/cli.js init <new-directory>` (the parent must exist). The command refuses existing directories and includes a valid manifest, research templates, and a getting-started guide. Use `node src/cli.js --help` for commands. Export independent agent instructions with `node src/cli.js compose <ramp.json> --agent reviewer --out reviewer.md`; shared core, charter, and provenance are always included. Existing output files are never overwritten.
+
 Copy [the example manifest](examples/literature-review/ramp.json), change the question and boundaries, and select module IDs for each agent:
 
 ```json
