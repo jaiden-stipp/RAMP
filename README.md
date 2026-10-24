@@ -6,7 +6,7 @@ A shared protocol for configuring research agents, organizing their work, and pr
 
 The inspiration is Baymax's interchangeable personality chips: a stable core stays in place while modules change what an agent specializes in and how it interacts. In RAMP, the core holds research integrity and project boundaries. Modules supply roles, methods, communication styles, and output formats.
 
-**Status: 0.1.0 draft with configuration tooling, persistent research records, a reference host, and a recorded pilot.** The reference host mediates explicitly configured tools, state gates, and budgets. External frameworks own model execution and scheduling; structural checks do not prove source support or model behavior.
+**Status: 0.1.0 draft with a portable CLI, guided workflows, project auditing, a recoverable visual builder, persistent research records, and an optional tested framework integration.** The reference host mediates explicitly configured tools, state gates, and budgets. External frameworks own model execution and scheduling; structural checks and recorded reviewer assertions do not prove factual truth or model behavior. The recorded pilot's general reliability advantage remains unestablished.
 
 ## The idea
 
@@ -83,6 +83,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Handoff checkpoints](docs/HANDOFFS.md) and [shared budgets](docs/BUDGETS.md): resumable context, module swaps, and project-wide reservations.
 - [Recorded research pilot](examples/pilot-citation-reliability/README.md): actual source review, separate model contexts, preserved failures, and an offline evaluation rubric/report. It does not establish a general performance advantage.
 - [Reference host adapter](docs/HOSTS.md): capability/tool mediation, budgets, cancellation, checkpoints, and a deterministic fake-agent example without API keys.
+- [Optional Agents SDK integration](examples/agents-sdk/README.md): an actual SDK loop with offline conformance, mediated tools, persisted evidence/handoffs, cancellation, and an explicit opt-in live path that has not been run.
 - [Research recipes](recipes/README.md): scoped literature review, technical feasibility, alternative comparison, and interchangeable method/persona/output modules.
 - [Local visual builder](docs/BUILDER.md): assemble agents, inspect constraints and changes, and export portable configurations with the CLI's validator.
 - [Roadmap](ROADMAP.md): proposed next steps.

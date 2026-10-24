@@ -17,6 +17,16 @@ The ordered development work in issues #1–#12 is implemented:
 - Literature-review, technical-feasibility, and alternative-comparison recipes with interchangeable methods, personas, and outputs.
 - A local visual configuration builder using the same validator, instruction previews, change inspection, and portable ZIP export.
 
+## Usability and integration phase (#13–#20)
+
+- A local installable `ramp` executable, portable scaffold instructions, and packed-install tests that move projects between paths with spaces and complete a manual task lifecycle.
+- Guided task creation/inspection/dry runs/transitions/reviews/completion and checkpoint preparation/preview/resume while retaining JSON-event APIs.
+- Combined read-only status/audit reports with passed/failed/not-checked sections and actionable blockers, budget exhaustion and stale inputs.
+- Atomic builder role/persona/output replacement, multi-select methods, invalid/malformed manifest recovery, recoverable browser drafts and reviewed new-file saves with conflict/path checks.
+- Independently versioned source-support reviews that keep structural linkage separate from human/model assertions without changing the original evidence contract.
+- Shared chained-swap reconstruction across CLI/host; compact/full handoff views and pinned optional source captures/publication classifications/packet hashes, with explicit omission checks.
+- An optional pinned OpenAI Agents SDK example using its actual loop with offline scripted models, zero-network conformance CI, tool mediation, cancellation, preserved records, restart/handoff and pending human review. The live path is opt-in and has not been run.
+
 ## Evidence still needed
 
 The [pilot report](examples/pilot-citation-reliability/REPORT.md) documents observed failures and limits. One workflow per condition and model-based reviews do **not** establish a general or causal reliability advantage. Structural presence and reference integrity do **not** establish source support, answer quality, or full context fidelity. Unsupported but well-formed assertions remain a deliberate negative control.

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, readFileSync, renameSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, writeFileSync, renameSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -23,4 +23,19 @@ test('packed local install exposes ramp outside checkout and projects survive mo
   const moved = join(dir, 'moved research'); renameSync(project, moved);
   command('validate', join(moved, 'ramp.json'), '--locked');
   assert.match(command('compose', join(moved, 'ramp.json'), '--locked', '--agent', 'scout'), /## Agent: scout/);
+  const path = join(moved, 'ramp.json');
+  const installed = (...args) => { const r = spawnSync(process.execPath, [join(install, 'node_modules/ramp-protocol/src/cli.js'), ...args], { cwd: moved, encoding: 'utf8' }); assert.equal(r.status, 0, r.stderr); return r.stdout; };
+  installed('task', 'create', path, '--id', 'T-installed', '--owner', 'scout', '--question', 'Synthetic clean-install flow', '--output', 'Partial brief', '--criterion', 'Disclose gaps');
+  installed('task', 'activate', path, '--id', 'T-installed');
+  const artifact = name => { writeFileSync(join(moved, `${name}.md`), `Synthetic ${name}; no real research finding.`); return `${name}.md`; };
+  for (const kind of ['charter', 'plan']) installed('task', 'advance', path, '--id', 'T-installed', '--artifact', artifact(kind));
+  const manifest = JSON.parse(readFileSync(path, 'utf8')); writeFileSync(join(moved, 'evidence.json'), JSON.stringify({ artifactVersion: '0.1.0', projectId: manifest.project.id, synthetic: true, evidence: [], claims: [] }));
+  installed('task', 'advance', path, '--id', 'T-installed', '--artifact', 'evidence.json');
+  const checkpoint = JSON.parse(installed('checkpoint', 'prepare', path, '--task', 'T-installed', '--from', 'scout', '--to', 'analyst', '--evidence', 'evidence.json', '--completed', 'Synthetic exercise', '--next', 'Review limitations', '--conclusion', 'No finding', '--uncertainty', 'Synthetic only', '--same-agent')).result;
+  assert.match(installed('checkpoint', 'resume', path, '--id', checkpoint.id), /Synthetic only/);
+  installed('task', 'advance', path, '--id', 'T-installed', '--artifact', artifact('analysis'));
+  installed('task', 'review', path, '--id', 'T-installed', '--reviewer', 'analyst', '--self-review', '--outcome', 'approved', '--artifact', artifact('review'));
+  installed('task', 'advance', path, '--id', 'T-installed', '--artifact', artifact('brief'));
+  installed('task', 'complete', path, '--id', 'T-installed', '--artifact', artifact('delivery'), '--criterion', 'Disclose gaps', '--disposition', 'partial');
+  const audit = JSON.parse(installed('audit', path, '--json')); assert.equal(audit.integrityPassed, true); assert.equal(audit.sections.tasks.items[0].status, 'done'); assert.equal(audit.sections.sourceSupport.status, 'not_checked');
 });

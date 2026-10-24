@@ -4,6 +4,7 @@
   "private": true,
   "description": "Research Agent Management Protocol: a stable research core with composable agent modules.",
   "type": "module",
+  "exports": { ".": "./src/index.js", "./host": "./src/host.js", "./protocol": "./src/protocol.js" },
   "bin": { "ramp": "src/cli.js" },
   "files": ["src/", "schemas/", "spec/", "modules/", "templates/", "examples/literature-review/", "recipes/", "docs/", "README.md", "AGENTS.md"],
   "engines": {
