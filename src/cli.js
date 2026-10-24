@@ -12,6 +12,7 @@ import { join } from 'node:path';
 import { HandoffStore } from './handoffs.js';
 import { BudgetStore } from './budgets.js';
 import { workflowCommand } from './workflow-cli.js';
+import { projectReport, reportMarkdown } from './audit.js';
 
 const usage = `Usage:
   node src/cli.js init <new-directory>
@@ -24,6 +25,8 @@ const usage = `Usage:
   node src/cli.js tasks <ramp.json> [--event <task-event.json>]
   node src/cli.js handoff <ramp.json> [--create <request.json> | --preview <id> | --resume <id>]
   node src/cli.js budgets <ramp.json> [--event <budget-event.json>]
+  ramp status <ramp.json> [--json] [--evidence <project-relative.json>]
+  ramp audit <ramp.json> [--json] [--evidence <project-relative.json>]
   node src/cli.js --help
   ramp task <create|inspect|activate|block|advance|review|complete|cancel> --help
   ramp checkpoint <prepare|preview|resume> --help
@@ -39,8 +42,8 @@ try {
     console.log(usage);
   } else {
     const [command, path, ...rawOptions] = args;
-    if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export', 'tasks', 'handoff', 'budgets'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
-    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {}, tasks: { '--event': true }, handoff: { '--create': true, '--preview': true, '--resume': true }, budgets: { '--event': true } }[command];
+    if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export', 'tasks', 'handoff', 'budgets', 'status', 'audit'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
+    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {}, tasks: { '--event': true }, handoff: { '--create': true, '--preview': true, '--resume': true }, budgets: { '--event': true }, status: { '--json': false, '--evidence': true }, audit: { '--json': false, '--evidence': true } }[command];
     const options = {};
     for (let index = 0; index < rawOptions.length; index++) {
       const name = rawOptions[index];
@@ -48,7 +51,11 @@ try {
       options[name] = accepted[name] ? rawOptions[++index] : true;
       if (accepted[name] && (!options[name]?.trim() || options[name].startsWith('--'))) throw new Error(usage);
     }
-    if (command.startsWith('evidence-')) {
+    if (['status', 'audit'].includes(command)) {
+      const report = projectReport(resolve(path), options['--evidence']);
+      console.log(jsonMode ? JSON.stringify(report, null, 2) : reportMarkdown(report));
+      if (!report.integrityPassed) process.exitCode = 1;
+    } else if (command.startsWith('evidence-')) {
       const bundle = validateEvidence(readJson(resolve(path)).value, resolve(path));
       console.log(command === 'evidence-export' ? evidenceMarkdown(bundle) : jsonMode ? JSON.stringify({ valid: true, diagnostics: [] }) : `Valid evidence bundle: ${bundle.projectId}`);
     } else if (command === 'init') {

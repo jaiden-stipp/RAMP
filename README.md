@@ -79,6 +79,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Structured evidence](docs/EVIDENCE.md): offline claim/reference audits and readable ledger export.
 - [Persistent tasks](docs/TASKS.md): append-only history, phase gates, review, and executable workflow example.
 - [First manual workflow](docs/WALKTHROUGH.md): guided task creation, inspection, dry runs, phase gates, reviews and checkpoint preparation/resume without JSON event files.
+- [Project status and audit](docs/AUDIT.md): combined read-only checks, actionable blockers, and JSON reports that separate integrity from source-support assessment.
 - [Handoff checkpoints](docs/HANDOFFS.md) and [shared budgets](docs/BUDGETS.md): resumable context, module swaps, and project-wide reservations.
 - [Recorded research pilot](examples/pilot-citation-reliability/README.md): actual source review, separate model contexts, preserved failures, and an offline evaluation rubric/report. It does not establish a general performance advantage.
 - [Reference host adapter](docs/HOSTS.md): capability/tool mediation, budgets, cancellation, checkpoints, and a deterministic fake-agent example without API keys.
