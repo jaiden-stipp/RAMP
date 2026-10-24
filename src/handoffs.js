@@ -1,5 +1,5 @@
 import { randomUUID } from 'node:crypto';
-import { readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { assertSchema } from './validation.js';
 import { validateEvidence } from './evidence.js';
@@ -7,6 +7,7 @@ import { compose, configureAgent, readJson, sha256 } from './protocol.js';
 import { configurationLock, compareLock, stableJson } from './lockfile.js';
 import { appendJournal, readJournal } from './journal.js';
 import { artifactReference } from './tasks.js';
+import { BudgetStore } from './budgets.js';
 
 function must(ok, message) { if (!ok) throw new Error(message); }
 export class HandoffStore {
@@ -47,12 +48,18 @@ export class HandoffStore {
       const evidenceRef = artifactReference(this.directory, { path: input.evidenceFile, kind: 'evidence' });
       const evidence = validateEvidence(readJson(join(this.directory, evidenceRef.path)).value);
       must(evidence.projectId === this.project.manifest.project.id, 'Evidence belongs to the wrong project');
+      const budgetPath = join(this.directory, '.ramp/budgets.jsonl');
+      let usage = input.budgetUsage;
+      if (existsSync(budgetPath)) {
+        const budget = new BudgetStore(budgetPath, this.project.manifest.project.id, this.project.manifest.project.limits, this.project.agents.map(a => a.id)).snapshot();
+        usage = { sources: budget.consumed.sources + budget.reserved.sources, iterations: budget.consumed.iterations + budget.reserved.iterations };
+      }
       const checkpoint = {
         artifactVersion: '0.1.0', id: randomUUID(), projectId: this.project.manifest.project.id, taskId: task.id, task,
         fromAgent: source.id, toAgent: target.id, sourceLock: configurationLock(this.project), destinationLock: configurationLock(destination),
         previousModules: source.modules.map(m => m.id), nextModules: ids,
         completedWork: input.completedWork, openQuestions: input.openQuestions, nextAction: input.nextAction,
-        conclusion: input.conclusion, uncertainty: input.uncertainty, budgetUsage: input.budgetUsage,
+        conclusion: input.conclusion, uncertainty: input.uncertainty, budgetUsage: usage,
         evidenceFile: evidenceRef.path, evidenceHash: evidenceRef.hash, evidence, evidenceIds: input.evidenceIds,
         artifacts: [...task.artifacts, ...(input.artifacts ?? []).map(a => artifactReference(this.directory, a))], sameUnderlyingAgent: input.sameUnderlyingAgent
       };

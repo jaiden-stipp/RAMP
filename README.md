@@ -68,6 +68,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Templates](templates/): project charter, evidence ledger, handoff, and research brief.
 - [Structured evidence](docs/EVIDENCE.md): offline claim/reference audits and readable ledger export.
 - [Persistent tasks](docs/TASKS.md): append-only history, phase gates, review, and executable workflow example.
+- [Handoff checkpoints](docs/HANDOFFS.md) and [shared budgets](docs/BUDGETS.md): resumable context, module swaps, and project-wide reservations.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 
