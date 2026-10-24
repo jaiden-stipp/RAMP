@@ -67,6 +67,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Example workflow](examples/literature-review/README.md): run the sample manually.
 - [Templates](templates/): project charter, evidence ledger, handoff, and research brief.
 - [Structured evidence](docs/EVIDENCE.md): offline claim/reference audits and readable ledger export.
+- [Persistent tasks](docs/TASKS.md): append-only history, phase gates, review, and executable workflow example.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 

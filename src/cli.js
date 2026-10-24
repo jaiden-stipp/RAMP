@@ -6,6 +6,8 @@ import { initializeProject } from './scaffold.js';
 import { assertLocked, compareLock, lockPath, writeLock } from './lockfile.js';
 import { readJson } from './protocol.js';
 import { validateEvidence, evidenceMarkdown } from './evidence.js';
+import { TaskStore } from './tasks.js';
+import { join } from 'node:path';
 
 const usage = `Usage:
   node src/cli.js init <new-directory>
@@ -15,6 +17,7 @@ const usage = `Usage:
   node src/cli.js diff <ramp.json>
   node src/cli.js evidence-validate <evidence.json> [--json]
   node src/cli.js evidence-export <evidence.json>
+  node src/cli.js tasks <ramp.json> [--event <task-event.json>]
   node src/cli.js --help
 
 init refuses existing directories. compose refuses existing output files.
@@ -26,8 +29,8 @@ try {
     console.log(usage);
   } else {
     const [command, path, ...rawOptions] = args;
-    if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
-    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {} }[command];
+    if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export', 'tasks'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
+    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {}, tasks: { '--event': true } }[command];
     const options = {};
     for (let index = 0; index < rawOptions.length; index++) {
       const name = rawOptions[index];
@@ -46,7 +49,11 @@ try {
       if (options['--out'] && resolve(options['--out']) === manifestPath) throw new Error('Output must not overwrite the project manifest');
       const project = loadProject(manifestPath);
       if (options['--locked']) assertLocked(project, lockPath(manifestPath));
-      if (command === 'lock') {
+      if (command === 'tasks') {
+        const directory = dirname(manifestPath);
+        const tasks = new TaskStore(join(directory, '.ramp/tasks.jsonl'), project, directory);
+        console.log(JSON.stringify(options['--event'] ? tasks.submit(readJson(resolve(options['--event'])).value) : tasks.list(), null, 2));
+      } else if (command === 'lock') {
         const changes = writeLock(project, lockPath(manifestPath), !!options['--update']);
         console.log(JSON.stringify({ lock: lockPath(manifestPath), changes }, null, 2));
       } else if (command === 'diff') {

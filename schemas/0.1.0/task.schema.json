@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#", "$id": "https://ramp.local/schemas/0.1.0/task.schema.json",
+  "type": "object", "additionalProperties": false,
+  "required": ["id", "owner", "phase", "question", "inputs", "expectedOutput", "acceptanceCriteria", "status", "evidenceIds", "artifacts", "reopenedFrom"],
+  "properties": {
+    "id": { "$ref": "#/definitions/text" }, "owner": { "$ref": "#/definitions/text" },
+    "phase": { "enum": ["scope", "plan", "gather", "analyze", "review", "synthesize", "deliver"] },
+    "question": { "$ref": "#/definitions/text" }, "inputs": { "$ref": "#/definitions/texts" },
+    "expectedOutput": { "$ref": "#/definitions/text" }, "acceptanceCriteria": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/definitions/text" } },
+    "status": { "enum": ["planned", "active", "blocked", "in_review", "done", "cancelled"] },
+    "evidenceIds": { "$ref": "#/definitions/texts" }, "artifacts": { "type": "array", "maxItems": 0 },
+    "reopenedFrom": { "anyOf": [{ "$ref": "#/definitions/text" }, { "type": "null" }] }
+  },
+  "definitions": { "text": { "type": "string", "pattern": "\\S" }, "texts": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/definitions/text" } } }
+}
