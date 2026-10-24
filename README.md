@@ -66,6 +66,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Module authoring](docs/MODULES.md): create and review a new module.
 - [Example workflow](examples/literature-review/README.md): run the sample manually.
 - [Templates](templates/): project charter, evidence ledger, handoff, and research brief.
+- [Structured evidence](docs/EVIDENCE.md): offline claim/reference audits and readable ledger export.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 

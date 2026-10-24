@@ -1,0 +1,14 @@
+{
+  "artifactVersion": "0.1.0", "projectId": "synthetic-traceability-demo", "synthetic": true,
+  "evidence": [
+    { "id": "E-001", "source": "synthetic:observation-a", "title": "Synthetic log A", "author": null, "publisher": null, "published": null, "accessed": "2026-10-23", "location": "entry 1", "supportedClaims": ["C-001", "C-003"], "limitations": ["Invented fixture, not an experiment"], "status": "accessible", "contradicts": ["E-002"] },
+    { "id": "E-002", "source": "synthetic:observation-b", "title": "Synthetic log B", "author": null, "publisher": null, "published": null, "accessed": "2026-10-23", "location": "entry 2", "supportedClaims": ["C-002"], "limitations": ["Different invented conditions"], "status": "accessible", "contradicts": ["E-001"] },
+    { "id": "E-003", "source": "synthetic:unavailable", "title": null, "author": null, "publisher": null, "published": null, "accessed": "2026-10-23", "location": null, "supportedClaims": [], "limitations": ["Source inaccessible; no observation can be verified"], "status": "inaccessible", "contradicts": [] }
+  ],
+  "claims": [
+    { "id": "C-001", "text": "Synthetic observation A records a successful transfer.", "type": "observation", "status": "verified", "evidenceIds": ["E-001"], "dependsOn": [], "contraryEvidenceIds": ["E-002"], "reasoning": null, "uncertainty": "Fixture only; no real-world conclusion" },
+    { "id": "C-002", "text": "Synthetic observation B records a failed transfer.", "type": "observation", "status": "verified", "evidenceIds": ["E-002"], "dependsOn": [], "contraryEvidenceIds": ["E-001"], "reasoning": null, "uncertainty": "Fixture only; conditions differ" },
+    { "id": "C-003", "text": "Success cannot be generalized from one fixture observation.", "type": "inference", "status": "verified", "evidenceIds": ["E-001"], "dependsOn": ["C-001", "C-002"], "contraryEvidenceIds": ["E-002"], "reasoning": "The two observations disagree under different conditions; neither supports a universal claim.", "uncertainty": "This is illustrative reasoning, not measured performance" },
+    { "id": "C-004", "text": "An inaccessible source might explain the discrepancy.", "type": "hypothesis", "status": "unverified", "evidenceIds": [], "dependsOn": [], "contraryEvidenceIds": [], "reasoning": null, "uncertainty": "No accessible evidence" }
+  ]
+}

@@ -5,6 +5,7 @@ import { diagnosticsOf } from './validation.js';
 import { initializeProject } from './scaffold.js';
 import { assertLocked, compareLock, lockPath, writeLock } from './lockfile.js';
 import { readJson } from './protocol.js';
+import { validateEvidence, evidenceMarkdown } from './evidence.js';
 
 const usage = `Usage:
   node src/cli.js init <new-directory>
@@ -12,6 +13,8 @@ const usage = `Usage:
   node src/cli.js compose <ramp.json> [--agent <id>] [--out <new-bundle.md>] [--locked]
   node src/cli.js lock <ramp.json> [--update]
   node src/cli.js diff <ramp.json>
+  node src/cli.js evidence-validate <evidence.json> [--json]
+  node src/cli.js evidence-export <evidence.json>
   node src/cli.js --help
 
 init refuses existing directories. compose refuses existing output files.
@@ -23,8 +26,8 @@ try {
     console.log(usage);
   } else {
     const [command, path, ...rawOptions] = args;
-    if (!['init', 'validate', 'compose', 'lock', 'diff'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
-    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {} }[command];
+    if (!['init', 'validate', 'compose', 'lock', 'diff', 'evidence-validate', 'evidence-export'].includes(command) || !path || path.startsWith('--')) throw new Error(usage);
+    const accepted = { init: {}, validate: { '--json': false, '--locked': false }, compose: { '--agent': true, '--out': true, '--locked': false }, lock: { '--update': false }, diff: {}, 'evidence-validate': { '--json': false }, 'evidence-export': {} }[command];
     const options = {};
     for (let index = 0; index < rawOptions.length; index++) {
       const name = rawOptions[index];
@@ -32,7 +35,10 @@ try {
       options[name] = accepted[name] ? rawOptions[++index] : true;
       if (accepted[name] && (!options[name]?.trim() || options[name].startsWith('--'))) throw new Error(usage);
     }
-    if (command === 'init') {
+    if (command.startsWith('evidence-')) {
+      const bundle = validateEvidence(readJson(resolve(path)).value, resolve(path));
+      console.log(command === 'evidence-export' ? evidenceMarkdown(bundle) : jsonMode ? JSON.stringify({ valid: true, diagnostics: [] }) : `Valid evidence bundle: ${bundle.projectId}`);
+    } else if (command === 'init') {
       const result = initializeProject(path);
       console.log(`Initialized RAMP project in ${result.directory}. Edit ramp.json, then validate and compose; see README.md.`);
     } else {
