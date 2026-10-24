@@ -38,3 +38,7 @@ Both saved workflows account for three unique sources and two cycles. A replay r
 4. Plan blinded, repeated, cross-topic cases with human source-support adjudication and an explicitly pinned host/model/budget before claiming reliability improvements. Such experiments were not performed here.
 
 The demonstrated value is inspectable configuration/evidence context, reproducible checks, and retention of negative findings. Broader interoperability and runtime behavior are subsequent engineering milestones, not conclusions supplied by this pilot.
+
+## Retrospective handoff detail check (#19)
+
+The new `node evaluation/handoff-context.js` uses the saved `sources.json` to exercise optional passage/publication-status/packet-hash preservation. It makes zero research/model calls and does not alter the original handoffs, briefs or earlier observations. Context-only output measures 4,410 Unicode characters compact vs 17,965 complete (75.45% shorter); no token measurement is claimed. Enriched context retains 10/10 declared exact details; a constructed passage/publication omission retains 8/10 despite unchanged source IDs. The original snapshot lacks all ten exact detail strings/hashes, which does not negate its preserved paraphrased qualifications. See `handoff-context-evaluation.json` and `docs/HANDOFFS.md` for exact denominators and limitations. Retrospective enrichment cannot explain the quality of an earlier brief or establish a general reliability advantage.

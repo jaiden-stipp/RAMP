@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#", "$id": "https://ramp.local/schemas/0.1.0/handoff-context.schema.json",
+  "type": "object", "additionalProperties": false, "required": ["contextVersion", "inputFile", "sourceDetails"],
+  "properties": { "contextVersion": { "const": "1" }, "inputFile": { "anyOf": [{ "$ref": "#/definitions/file" }, { "type": "null" }] }, "sourceDetails": { "type": "array", "items": { "$ref": "#/definitions/source" } } },
+  "definitions": {
+    "text": { "type": "string", "pattern": "\\S" }, "hash": { "type": "string", "pattern": "^[a-f0-9]{64}$" },
+    "optionalText": { "anyOf": [{ "$ref": "#/definitions/text" }, { "type": "null" }] },
+    "file": { "type": "object", "additionalProperties": false, "required": ["path", "hash"], "properties": { "path": { "$ref": "#/definitions/text" }, "hash": { "$ref": "#/definitions/hash" } } },
+    "source": { "type": "object", "additionalProperties": false, "required": ["evidenceId", "passage", "publicationStatus", "contentHash", "packet", "notes"], "properties": {
+      "evidenceId": { "$ref": "#/definitions/text" }, "passage": { "anyOf": [{ "type": "string", "pattern": "\\S", "maxLength": 2000 }, { "type": "null" }] },
+      "publicationStatus": { "$ref": "#/definitions/optionalText" }, "contentHash": { "anyOf": [{ "$ref": "#/definitions/hash" }, { "type": "null" }] },
+      "packet": { "anyOf": [{ "$ref": "#/definitions/file" }, { "type": "null" }] }, "notes": { "type": "array", "items": { "$ref": "#/definitions/text" } }
+    } }
+  }
+}

@@ -27,8 +27,8 @@ test('guided CLI lifecycle, failed review rollback and handoff need no event JSO
   for (const kind of ['charter', 'plan', 'evidence']) task('advance', '--artifact', artifact(kind));
   writeFileSync(join(dir, 'evidence.json'), JSON.stringify({ artifactVersion: '0.1.0', projectId: JSON.parse(readFileSync(path, 'utf8')).project.id, synthetic: true, evidence: [], claims: [] }));
   const cp = run('checkpoint', 'prepare', '--task', 'T-1', '--from', 'scout', '--to', 'analyst', '--evidence', 'evidence.json', '--completed', 'Prepared fixtures', '--next', 'Review', '--conclusion', 'No real finding', '--uncertainty', 'Synthetic only', '--question', 'Unmeasured', '--same-agent', '--module', 'roles/analyst', '--module', 'methods/evidence-first', '--module', 'personas/teaching-guide');
-  assert.match(run('checkpoint', 'preview', '--id', cp.id).instructions, /teaching-guide/);
-  run('checkpoint', 'resume', '--id', cp.id);
+  assert.match(run('checkpoint', 'preview', '--id', cp.id, '--json').instructions, /teaching-guide/);
+  run('checkpoint', 'resume', '--id', cp.id, '--json');
   task('advance', '--actor', 'analyst', '--artifact', artifact('analysis'));
   task('review', '--reviewer', 'reviewer', '--actor', 'reviewer', '--outcome', 'changes_requested', '--issue', 'Missing limitations', '--artifact', artifact('failed-review'));
   assert.equal(task('inspect').task.phase, 'analyze');

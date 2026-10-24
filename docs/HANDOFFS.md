@@ -1,5 +1,38 @@
 # Handoff checkpoints and module swaps
 
+## Compact and complete views
+
+`ramp checkpoint preview <ramp.json> --id <id>` and `checkpoint resume` return composed instructions with a compact research summary by default. Add `--full` for the complete context/history, or `--json` for the structured response. The original `handoff --preview/--resume` JSON interfaces remain compatible. Summaries name the task/decision, uncertainty, work, open questions, next owner/action, budget, exact configuration hashes, every evidence record, contrary links, claim reasoning/caveats and source locators. Missing passage captures, publication status and content/packet hashes are explicitly labeled missing. They do not mean the sources lack that information.
+
+The full versioned checkpoint and any context-v1 adjunct are retained together in the hash-chained task journal. Compact output explicitly omits prior event bodies, complete lock internals, repeated record fields and author/publisher metadata, and points to the full view/journal. It does not truncate/deallocate the authoritative records or restore hidden provider-session state. Historical checkpoints remain available in `ramp handoff <manifest>` and the journal after their one-time resume; previews are for pending checkpoints.
+
+### Optional source captures and packet provenance
+
+Pass `--context context.json` to `ramp checkpoint prepare`, or set `contextFile` in a legacy creation request. This project-relative file uses an additive, independently versioned input:
+
+```json
+{
+  "contextVersion": "1",
+  "sourceDetails": [{
+    "evidenceId": "E-001",
+    "passage": "A short passage actually captured from the source, when permitted.",
+    "publicationStatus": "Record the actual classification or omit when unknown",
+    "packetFile": "sources.json",
+    "notes": ["Retain material source qualifications here"]
+  }]
+}
+```
+
+Use only real captures/metadata or clearly labeled synthetic fixtures. Passage captures are optional and limited to 2,000 characters; larger values fail rather than being silently truncated. Optional `contentHash` preserves an asserted remote-byte hash when available; it is never invented or equated to the packet hash. Missing fields normalize to null/empty. The normalizer computes local packet/input-file hashes; their files must remain project-contained and unchanged. Changing/deleting them blocks preview/resume and a host restart after a resumed enriched handoff. Audit also checks them. Full evidence/claim snapshots, contradictions and history remain authoritative even when a compact view is used.
+
+The original checkpoint/evidence 0.1.0 shapes are unchanged. New created events optionally carry a schema-validated `contextVersion: "1"` adjunct (`handoff-context.schema.json`). Old journals load with explicit missing-detail labels; no passage/status/hash is backfilled implicitly. Preserve input revisions under new filenames.
+
+### Reproduce the pilot formatting check
+
+`node evaluation/handoff-context.js` reproduces `examples/pilot-citation-reliability/handoff-context-evaluation.json`. It retrospectively uses the **saved** source packet, without editing original checkpoints or making research/model calls. The compact context has 4,410 Unicode characters versus 17,965 for the full context JSON (75.45% shorter; shared instructions excluded). Token counts are unmeasured/null.
+
+Ten declared exact-text/hash details cover three passage captures, three publication classifications, three source qualifications and the packet hash. Enriched context retains 10/10; a synthetic control removes one passage and one publication classification and retains 8/10 while keeping all source IDs. The original snapshot retains 0/10 of these exact detail strings/hashes; that is **not** zero semantic fidelity, as its existing paraphrased qualifications remain present. These checks detect specified omissions, not paraphrase equivalence, complete reasoning preservation, source truth, or improvement to the previously written briefs.
+
 ## Chained configurations
 
 The CLI handoff store and reference host reconstruct effective configurations from the disk manifest plus **every resumed checkpoint in journal order**. Each checkpoint locks the complete source/destination configuration, including earlier swaps. Restart replays the same chain and rejects changed configurations. The disk manifest/lock remain the baseline: ordinary `compose` describes that baseline; handoff previews describe the effective destination.

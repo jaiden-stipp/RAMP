@@ -13,9 +13,9 @@ const definitions = {
     advance: ['id', 'phase', 'artifact'], review: ['id', 'reviewer', 'outcome', 'self-review', 'issue*', 'artifact', 'return-to'],
     complete: ['id', 'artifact', 'criterion*', 'disposition'], cancel: ['id']
   },
-  checkpoint: { prepare: ['task', 'from', 'to', 'evidence', 'evidence-id*', 'module*', 'completed*', 'question*', 'next', 'conclusion', 'uncertainty', 'sources-used', 'iterations-used', 'same-agent'], preview: ['id'], resume: ['id'] }
+  checkpoint: { prepare: ['task', 'from', 'to', 'evidence', 'context', 'evidence-id*', 'module*', 'completed*', 'question*', 'next', 'conclusion', 'uncertainty', 'sources-used', 'iterations-used', 'same-agent'], preview: ['id', 'full', 'json'], resume: ['id', 'full', 'json'] }
 };
-const flags = new Set(['dry-run', 'self-review', 'same-agent']);
+const flags = new Set(['dry-run', 'self-review', 'same-agent', 'full', 'json']);
 export function workflowHelp(group, verb) {
   const entries = definitions[group];
   if (!entries) throw new Error('Unknown workflow command');
@@ -44,13 +44,13 @@ export function workflowCommand(args) {
   let result;
   if (group === 'checkpoint') {
     if (options['dry-run']) throw new Error('Checkpoint operations use preview before resume; --dry-run is supported on task changes');
-    if (verb === 'preview') result = handoffs.preview(required('id'));
-    if (verb === 'resume') result = handoffs.resume(required('id'), actor);
+    if (verb === 'preview') result = handoffs.preview(required('id'), { view: options.full ? 'full' : 'compact' });
+    if (verb === 'resume') result = handoffs.resume(required('id'), actor, { view: options.full ? 'full' : 'compact' });
     if (verb === 'prepare') {
       const from = required('from'); if (actor !== 'operator' && actor !== from) throw new Error('Actor must be operator or the current owner');
       const usage = key => { const value = Number(options[key] ?? 0); if (!Number.isSafeInteger(value) || value < 0) throw new Error(`--${key} must be a nonnegative safe integer`); return value; };
       result = handoffs.create({ taskId: required('task'), fromAgent: from, toAgent: required('to'),
-        evidenceFile: required('evidence'), evidenceIds: options['evidence-id'] ?? [], ...(options.module ? { modules: options.module } : {}),
+        evidenceFile: required('evidence'), ...(options.context ? { contextFile: options.context } : {}), evidenceIds: options['evidence-id'] ?? [], ...(options.module ? { modules: options.module } : {}),
         completedWork: required('completed'), openQuestions: options.question ?? [], nextAction: required('next'), conclusion: required('conclusion'), uncertainty: required('uncertainty'),
         budgetUsage: { sources: usage('sources-used'), iterations: usage('iterations-used') }, sameUnderlyingAgent: !!options['same-agent'] }, actor);
     }
@@ -87,5 +87,6 @@ export function workflowCommand(args) {
       catch (error) { throw new Error(`${error.message}. Inspect requirements: ramp task inspect "${manifestPath}" --id ${task.id}`); }
     }
   }
+  if (group === 'checkpoint' && ['preview', 'resume'].includes(verb) && !options.json) return result.instructions;
   return JSON.stringify({ dryRun: !!options['dry-run'], result }, null, 2);
 }

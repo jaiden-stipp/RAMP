@@ -1,0 +1,217 @@
+{
+  "evaluationVersion": "handoff-context-1",
+  "retrospectiveFormattingCheck": true,
+  "newResearchOrModelRuns": 0,
+  "tokenCounts": null,
+  "sizing": {
+    "unit": "Unicode code points in context section (shared instructions excluded)",
+    "compact": 4410,
+    "full": 17965,
+    "reduction": 0.7545226829947119,
+    "compactUtf8Bytes": 4412,
+    "fullUtf8Bytes": 17965
+  },
+  "originalSnapshot": {
+    "passed": 0,
+    "total": 10,
+    "details": [
+      {
+        "id": "E-001:passage",
+        "kind": "passage",
+        "text": "Structural validation alone may be insufficient to allow an application to correctly utilize certain values.",
+        "retained": false
+      },
+      {
+        "id": "E-001:publication",
+        "kind": "publication-status",
+        "text": "Published Internet-Draft/work in progress; not an IETF RFC",
+        "retained": false
+      },
+      {
+        "id": "E-001:qualification",
+        "kind": "caveat",
+        "text": "The format vocabulary addresses defined semantic formats. Validation behavior depends on vocabulary and implementation; this is not validation of arbitrary natural-language entailment.",
+        "retained": false
+      },
+      {
+        "id": "E-002:passage",
+        "kind": "passage",
+        "text": "which can be used to form assessments about its quality, reliability or trustworthiness",
+        "retained": false
+      },
+      {
+        "id": "E-002:publication",
+        "kind": "publication-status",
+        "text": "W3C Working Group Note; non-normative overview",
+        "retained": false
+      },
+      {
+        "id": "E-002:qualification",
+        "kind": "caveat",
+        "text": "Describes provenance as information for assessment and interchange. Shares its standards family with E-003; these are not independent empirical corroborations.",
+        "retained": false
+      },
+      {
+        "id": "E-003:passage",
+        "kind": "passage",
+        "text": "provenance is also regarded as an entity (of type Bundle)",
+        "retained": false
+      },
+      {
+        "id": "E-003:publication",
+        "kind": "publication-status",
+        "text": "W3C Recommendation; Section 2 is informative",
+        "retained": false
+      },
+      {
+        "id": "E-003:qualification",
+        "kind": "caveat",
+        "text": "Names entities/activities/agents and describes provenance of provenance, including attribution and generation time. The cited conceptual overview is informative rather than the normative type definitions.",
+        "retained": false
+      },
+      {
+        "id": "packet-hash",
+        "kind": "packet-hash",
+        "text": "df70af385551708e973c3b9e4cafdf4fddcbdcba1b3ccf0f9c650bb4313a1a77",
+        "retained": false
+      }
+    ],
+    "interpretation": "Exact declared material-detail retention, not semantic equivalence, source truth or hidden-state restoration"
+  },
+  "enrichedContext": {
+    "passed": 10,
+    "total": 10,
+    "details": [
+      {
+        "id": "E-001:passage",
+        "kind": "passage",
+        "text": "Structural validation alone may be insufficient to allow an application to correctly utilize certain values.",
+        "retained": true
+      },
+      {
+        "id": "E-001:publication",
+        "kind": "publication-status",
+        "text": "Published Internet-Draft/work in progress; not an IETF RFC",
+        "retained": true
+      },
+      {
+        "id": "E-001:qualification",
+        "kind": "caveat",
+        "text": "The format vocabulary addresses defined semantic formats. Validation behavior depends on vocabulary and implementation; this is not validation of arbitrary natural-language entailment.",
+        "retained": true
+      },
+      {
+        "id": "E-002:passage",
+        "kind": "passage",
+        "text": "which can be used to form assessments about its quality, reliability or trustworthiness",
+        "retained": true
+      },
+      {
+        "id": "E-002:publication",
+        "kind": "publication-status",
+        "text": "W3C Working Group Note; non-normative overview",
+        "retained": true
+      },
+      {
+        "id": "E-002:qualification",
+        "kind": "caveat",
+        "text": "Describes provenance as information for assessment and interchange. Shares its standards family with E-003; these are not independent empirical corroborations.",
+        "retained": true
+      },
+      {
+        "id": "E-003:passage",
+        "kind": "passage",
+        "text": "provenance is also regarded as an entity (of type Bundle)",
+        "retained": true
+      },
+      {
+        "id": "E-003:publication",
+        "kind": "publication-status",
+        "text": "W3C Recommendation; Section 2 is informative",
+        "retained": true
+      },
+      {
+        "id": "E-003:qualification",
+        "kind": "caveat",
+        "text": "Names entities/activities/agents and describes provenance of provenance, including attribution and generation time. The cited conceptual overview is informative rather than the normative type definitions.",
+        "retained": true
+      },
+      {
+        "id": "packet-hash",
+        "kind": "packet-hash",
+        "text": "df70af385551708e973c3b9e4cafdf4fddcbdcba1b3ccf0f9c650bb4313a1a77",
+        "retained": true
+      }
+    ],
+    "interpretation": "Exact declared material-detail retention, not semantic equivalence, source truth or hidden-state restoration"
+  },
+  "omittedDetailControl": {
+    "passed": 8,
+    "total": 10,
+    "details": [
+      {
+        "id": "E-001:passage",
+        "kind": "passage",
+        "text": "Structural validation alone may be insufficient to allow an application to correctly utilize certain values.",
+        "retained": false
+      },
+      {
+        "id": "E-001:publication",
+        "kind": "publication-status",
+        "text": "Published Internet-Draft/work in progress; not an IETF RFC",
+        "retained": true
+      },
+      {
+        "id": "E-001:qualification",
+        "kind": "caveat",
+        "text": "The format vocabulary addresses defined semantic formats. Validation behavior depends on vocabulary and implementation; this is not validation of arbitrary natural-language entailment.",
+        "retained": true
+      },
+      {
+        "id": "E-002:passage",
+        "kind": "passage",
+        "text": "which can be used to form assessments about its quality, reliability or trustworthiness",
+        "retained": true
+      },
+      {
+        "id": "E-002:publication",
+        "kind": "publication-status",
+        "text": "W3C Working Group Note; non-normative overview",
+        "retained": false
+      },
+      {
+        "id": "E-002:qualification",
+        "kind": "caveat",
+        "text": "Describes provenance as information for assessment and interchange. Shares its standards family with E-003; these are not independent empirical corroborations.",
+        "retained": true
+      },
+      {
+        "id": "E-003:passage",
+        "kind": "passage",
+        "text": "provenance is also regarded as an entity (of type Bundle)",
+        "retained": true
+      },
+      {
+        "id": "E-003:publication",
+        "kind": "publication-status",
+        "text": "W3C Recommendation; Section 2 is informative",
+        "retained": true
+      },
+      {
+        "id": "E-003:qualification",
+        "kind": "caveat",
+        "text": "Names entities/activities/agents and describes provenance of provenance, including attribution and generation time. The cited conceptual overview is informative rather than the normative type definitions.",
+        "retained": true
+      },
+      {
+        "id": "packet-hash",
+        "kind": "packet-hash",
+        "text": "df70af385551708e973c3b9e4cafdf4fddcbdcba1b3ccf0f9c650bb4313a1a77",
+        "retained": true
+      }
+    ],
+    "interpretation": "Exact declared material-detail retention, not semantic equivalence, source truth or hidden-state restoration"
+  },
+  "originalInputsUnmodified": true,
+  "limitation": "Exact declared text checks detect omissions, not paraphrase equivalence or semantic correctness. Retrospective packet enrichment cannot explain earlier brief quality. Full remote bytes/hashes remain unavailable."
+}

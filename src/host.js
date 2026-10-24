@@ -7,6 +7,7 @@ import { HandoffStore } from './handoffs.js';
 import { BudgetStore, sourceIdentity } from './budgets.js';
 import { appendJournal, readJournal } from './journal.js';
 import { effectiveProject } from './effective-project.js';
+import { validateHandoffContext } from './handoff-context.js';
 
 export class HostError extends Error {
   constructor(code, message) { super(message); this.code = code; }
@@ -34,7 +35,9 @@ export class ReferenceHost {
     this.project = effective; this.tasks.project = effective;
     this.handoffs = new HandoffStore(this.tasks);
     this.budgets = new BudgetStore(join(this.directory, '.ramp/budgets.jsonl'), effective.manifest.project.id, effective.manifest.project.limits, effective.agents.map(a => a.id));
-    this.handoffs.list(); this.budgets.snapshot();
+    const handoffHistory = this.handoffs.list();
+    for (const id of handoffHistory.resumed) if (handoffHistory.contexts[id]) validateHandoffContext(handoffHistory.contexts[id], handoffHistory.checkpoints.find(c => c.id === id), this.directory);
+    this.budgets.snapshot();
   }
   record(type, data) { appendJournal(this.path, { type, projectId: this.project.manifest.project.id, ...data }); }
   task(agentId, taskId) {

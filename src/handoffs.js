@@ -9,6 +9,7 @@ import { appendJournal, readJournal } from './journal.js';
 import { artifactReference } from './tasks.js';
 import { BudgetStore } from './budgets.js';
 import { effectiveProject } from './effective-project.js';
+import { prepareHandoffContext, validateHandoffContext, handoffContext } from './handoff-context.js';
 
 function must(ok, message) { if (!ok) throw new Error(message); }
 export class HandoffStore {
@@ -19,6 +20,7 @@ export class HandoffStore {
     for (const [index, event] of events.entries()) {
       if (event.type === 'checkpoint' && event.operation === 'created') {
         const c = event.checkpoint; assertSchema('handoff', c); validateEvidence(c.evidence);
+        if (event.context) validateHandoffContext(event.context, c);
         must(c.projectId === this.project.manifest.project.id && c.evidence.projectId === c.projectId && c.taskId === c.task.id, 'Checkpoint project/task mismatch');
         must(!checkpoints.has(c.id), 'Duplicate checkpoint ID');
         must(c.evidenceIds.every(id => c.evidence.evidence.some(e => e.id === id)), 'Checkpoint has missing evidence references');
@@ -32,7 +34,7 @@ export class HandoffStore {
         resumed.add(c.id);
       }
     }
-    return { checkpoints: [...checkpoints.values()], resumed: [...resumed] };
+    return { checkpoints: [...checkpoints.values()], resumed: [...resumed], contexts: Object.fromEntries(events.filter(e => e.type === 'checkpoint' && e.operation === 'created' && e.context).map(e => [e.checkpoint.id, e.context])) };
   }
   list() { return this.replay(readJournal(this.path).map(r => r.payload)); }
   append(event) { appendJournal(this.path, event, events => this.replay(events)); }
@@ -68,14 +70,19 @@ export class HandoffStore {
       };
       assertSchema('handoff', checkpoint);
       must(checkpoint.budgetUsage.sources <= this.project.manifest.project.limits.maxSources && checkpoint.budgetUsage.iterations <= this.project.manifest.project.limits.maxIterations, 'Checkpoint budget usage exceeds project limits');
-      this.append({ type: 'checkpoint', operation: 'created', projectId: checkpoint.projectId, actor, reason: 'Record research handoff', checkpoint });
+      let context;
+      if (input.contextFile) {
+        const ref = artifactReference(this.directory, { path: input.contextFile, kind: 'evidence' });
+        context = prepareHandoffContext(readJson(join(this.directory, ref.path)).value, checkpoint, this.directory, { path: ref.path, hash: ref.hash });
+      }
+      this.append({ type: 'checkpoint', operation: 'created', projectId: checkpoint.projectId, actor, reason: 'Record research handoff', checkpoint, ...(context ? { context } : {}) });
       return checkpoint;
     } catch (error) {
       this.append({ type: 'checkpoint', operation: 'rejected', projectId: this.project.manifest.project.id, actor, reason: `Rejected handoff: ${error.message}`, request: { taskId: input.taskId ?? null, fromAgent: input.fromAgent ?? null, toAgent: input.toAgent ?? null, modules: input.modules ?? null } });
       throw error;
     }
   }
-  preview(id) {
+  preview(id, { view = 'compact' } = {}) {
     this.refresh();
     const history = this.list(); const c = history.checkpoints.find(c => c.id === id);
     must(c && !history.resumed.includes(id), 'Unknown or already resumed checkpoint');
@@ -86,11 +93,15 @@ export class HandoffStore {
     for (const a of c.artifacts) must(artifactReference(this.directory, a).hash === a.hash, `Artifact changed since checkpoint: ${a.path}`);
     const destination = configureAgent(this.project, c.toAgent, c.nextModules, this.directory);
     must(compareLock(c.destinationLock, destination).length === 0, 'Destination configuration changed since checkpoint');
+    const context = history.contexts[id] ?? { contextVersion: '1', inputFile: null, sourceDetails: [] };
+    validateHandoffContext(context, c, this.directory);
+    const events = readJournal(this.path).map(r => r.payload);
+    const taskHistory = events.filter(e => e.taskId === c.taskId || e.task?.id === c.taskId || e.checkpoint?.taskId === c.taskId);
     const disclosure = c.sameUnderlyingAgent ? 'Same underlying agent: any review of its own work is self-review, not independent verification.' : 'Separate agent assignment; independence still requires operator verification.';
-    return { checkpoint: c, disclosure, instructions: `${compose(destination, c.toAgent)}\n## Restored research context\n\n${disclosure}\n\n${JSON.stringify({ sourceConfiguration: c.sourceLock, destinationConfiguration: c.destinationLock, task: c.task, completedWork: c.completedWork, evidence: c.evidence, openQuestions: c.openQuestions, conclusion: c.conclusion, uncertainty: c.uncertainty, budgetUsage: c.budgetUsage, nextAction: c.nextAction }, null, 2)}\n` };
+    return { checkpoint: c, context, view, disclosure, instructions: `${compose(destination, c.toAgent)}\n${disclosure}\n\n${handoffContext(c, context, view, taskHistory)}` };
   }
-  resume(id, actor = 'operator') {
-    const preview = this.preview(id); const c = preview.checkpoint;
+  resume(id, actor = 'operator', options = {}) {
+    const preview = this.preview(id, options); const c = preview.checkpoint;
     this.append({ type: 'transition', handoffId: id, projectId: c.projectId, taskId: c.taskId, owner: c.toAgent, actor, reason: `Resume handoff ${id}`, artifacts: [] });
     return preview;
   }

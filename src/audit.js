@@ -9,6 +9,7 @@ import { BudgetStore } from './budgets.js';
 import { validateEvidence } from './evidence.js';
 import { readJournal } from './journal.js';
 import { diagnostic, diagnosticsOf } from './validation.js';
+import { validateHandoffContext } from './handoff-context.js';
 
 export function projectReport(manifestPath, evidencePath) {
   const directory = dirname(manifestPath); const sections = {}; const actions = [];
@@ -39,6 +40,8 @@ export function projectReport(manifestPath, evidencePath) {
     check('checkpoints', tasks.path, () => {
       history = store.list(); const errors = [];
       for (const c of history.checkpoints) {
+        try { if (history.contexts[c.id]) validateHandoffContext(history.contexts[c.id], c, directory); }
+        catch (error) { errors.push(...diagnosticsOf(error, tasks.path, `/checkpoints/${c.id}/context`)); }
         for (const a of [{ path: c.evidenceFile, kind: 'evidence', hash: c.evidenceHash }, ...c.artifacts]) {
           try { if (artifactReference(directory, a).hash !== a.hash) throw new Error(`Checkpoint ${c.id} artifact changed: ${a.path}`); }
           catch (error) { errors.push(...diagnosticsOf(error, join(directory, a.path), `/checkpoints/${c.id}`)); }
