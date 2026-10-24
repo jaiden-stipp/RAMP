@@ -1,0 +1,11 @@
+{
+  "fixtureVersion": "1",
+  "disclosure": "Deliberately mutated negative controls; not outputs of live agents or extra research runs.",
+  "cases": [
+    { "id": "missing-source-location", "mutation": "missing-location", "expected": "Evidence contract fails and provenance completeness declines" },
+    { "id": "lost-uncertainty", "mutation": "lost-uncertainty", "expected": "Uncertainty preservation declines" },
+    { "id": "lost-open-questions", "mutation": "lost-questions", "expected": "Open-question preservation declines" },
+    { "id": "overclaimed-disposition", "mutation": "wrong-disposition", "expected": "Disposition differs from declared acceptance expectation" },
+    { "id": "well-formed-unsupported-claim", "mutation": "unsupported-claim", "expected": "Structural checks still pass; semantic source support remains unassessed automatically" }
+  ]
+}

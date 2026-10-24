@@ -1,0 +1,468 @@
+{
+  "evaluationVersion": "1",
+  "recordedResearchConditions": 2,
+  "repeatedTrialsPerCondition": 1,
+  "humanReviewPerformed": false,
+  "causalImprovementEstablished": false,
+  "results": {
+    "single-agent": {
+      "status": "evaluated",
+      "diagnostics": [],
+      "metrics": {
+        "evidenceContractValid": true,
+        "citationReferenceResolution": {
+          "passed": 4,
+          "total": 4,
+          "score": 1
+        },
+        "provenanceCompleteness": {
+          "passed": 30,
+          "total": 30,
+          "score": 1
+        },
+        "uncertaintyPreservation": {
+          "passed": 3,
+          "total": 3,
+          "score": 1
+        },
+        "openQuestionPreservation": {
+          "passed": 2,
+          "total": 2,
+          "score": 1
+        },
+        "sourcePreservation": {
+          "passed": 3,
+          "total": 3,
+          "score": 1
+        },
+        "handoffCompleteness": {
+          "passed": 15,
+          "total": 15,
+          "score": 1
+        },
+        "dispositionAccurateForDeclaredCriteria": true,
+        "humanSourceSupport": null,
+        "modelAssistedSourceSupport": {
+          "reviewerType": "separate-model-context",
+          "humanReview": false,
+          "assessments": [
+            {
+              "claim": "C-001: The no-semantics hypothesis is too broad; defined formats are a counterexample.",
+              "sourceIds": [
+                "E-001"
+              ],
+              "judgment": "supported",
+              "rationale": "Sections 7.1-7.2.2 support this qualified correction. The brief omits vocabulary/default and syntax-only detail present in the source."
+            },
+            {
+              "claim": "C-002: Provenance helps organize assessment.",
+              "sourceIds": [
+                "E-002"
+              ],
+              "judgment": "supported",
+              "rationale": "Abstract and section 1 state an assessment purpose, not empirical accuracy. The brief omits the non-normative Note status."
+            },
+            {
+              "claim": "C-003: Assessment can include the provenance record itself.",
+              "sourceIds": [
+                "E-003"
+              ],
+              "judgment": "supported",
+              "rationale": "Section 2.2.2 addresses provenance of provenance. The brief omits that the cited overview is informative."
+            },
+            {
+              "claim": "C-004: RAMP should distinguish formal/reference checks from source-support judgment.",
+              "sourceIds": [
+                "E-001",
+                "E-002",
+                "E-003"
+              ],
+              "judgment": "inference",
+              "rationale": "Reasonable design conclusion from the sources' scope; explicitly labeled inference, not a source-imposed RAMP requirement."
+            },
+            {
+              "claim": "RAMP can validate declared constraints and trace claims to recorded passages.",
+              "sourceIds": [
+                "E-001",
+                "E-002",
+                "E-003"
+              ],
+              "judgment": "uncertain",
+              "rationale": "These sources establish conceptual tools, not implemented RAMP capability. No implementation demonstration was examined."
+            },
+            {
+              "claim": "The packet contains evidence IDs and source-section locators.",
+              "sourceIds": [],
+              "judgment": "supported",
+              "rationale": "Directly observed in supplied evidence.json and sources.json; this does not establish source support by itself."
+            },
+            {
+              "claim": "The pilot does not establish general agent accuracy or comparative reliability.",
+              "sourceIds": [],
+              "judgment": "supported",
+              "rationale": "A justified scope limitation for the supplied artifacts, which contain no general performance study."
+            }
+          ],
+          "dispositionAssessment": "Bounded-answer complete is defensible. Full-charter completeness remains unverified; the brief does not supply all acceptance records. Do not compare its bounded disposition directly to the other brief's full-charter disposition.",
+          "limitations": [
+            "Source-status and informative-section qualifications are available through the packet but absent from the brief's own wording.",
+            "Present-tense RAMP capability needs implementation evidence or conditional wording.",
+            "Open questions preserve cross-topic transfer, human agreement and blinded repeated comparison; operational validator and snapshot questions are missing."
+          ]
+        }
+      }
+    },
+    "separate-agents": {
+      "status": "evaluated",
+      "diagnostics": [],
+      "metrics": {
+        "evidenceContractValid": true,
+        "citationReferenceResolution": {
+          "passed": 11,
+          "total": 11,
+          "score": 1
+        },
+        "provenanceCompleteness": {
+          "passed": 30,
+          "total": 30,
+          "score": 1
+        },
+        "uncertaintyPreservation": {
+          "passed": 3,
+          "total": 3,
+          "score": 1
+        },
+        "openQuestionPreservation": {
+          "passed": 2,
+          "total": 2,
+          "score": 1
+        },
+        "sourcePreservation": {
+          "passed": 3,
+          "total": 3,
+          "score": 1
+        },
+        "handoffCompleteness": {
+          "passed": 15,
+          "total": 15,
+          "score": 1
+        },
+        "dispositionAccurateForDeclaredCriteria": true,
+        "humanSourceSupport": null,
+        "modelAssistedSourceSupport": {
+          "reviewerType": "separate-model-context",
+          "humanReview": false,
+          "assessments": [
+            {
+              "claim": "Validation and format behavior depend on the applicable vocabulary and implementation configuration.",
+              "sourceIds": [
+                "E-001"
+              ],
+              "judgment": "supported",
+              "rationale": "Sections 3 and 7 support the account. Refusal is required when Format-Assertion is declared true; required checks are syntactic, not existence/truth checks."
+            },
+            {
+              "claim": "Provenance supports assessment without a mere-record truth guarantee.",
+              "sourceIds": [
+                "E-002"
+              ],
+              "judgment": "supported",
+              "rationale": "Abstract and section 1 support assessment; the brief correctly preserves the non-normative Note qualification."
+            },
+            {
+              "claim": "PROV models entities, activities, agents and provenance of provenance.",
+              "sourceIds": [
+                "E-003"
+              ],
+              "judgment": "supported",
+              "rationale": "Sections 2.1 and 2.2.2 support this account. The Recommendation/informative-section distinction is correctly preserved."
+            },
+            {
+              "claim": "Keep conformance, preservation and source support separate; passing records may retain mistakes.",
+              "sourceIds": [
+                "E-001",
+                "E-002",
+                "E-003"
+              ],
+              "judgment": "inference",
+              "rationale": "The brief explicitly marks the recommendation and hypothetical examples; these are not observed failures or a measured reliability result."
+            },
+            {
+              "claim": "Preserve the proposed configuration, claim, passage, transformation and review fields, and compare retained records separately from support review.",
+              "sourceIds": [
+                "E-001",
+                "E-002",
+                "E-003"
+              ],
+              "judgment": "inference",
+              "rationale": "Useful proposed practice; the sources do not mandate this exact field set or demonstrate its effectiveness."
+            },
+            {
+              "claim": "Schema results and provenance can preserve an inspectable handoff account.",
+              "sourceIds": [
+                "E-001",
+                "E-002",
+                "E-003"
+              ],
+              "judgment": "inference",
+              "rationale": "Defensible conceptual possibility; it does not establish that this handoff or RAMP implementation actually preserved the account."
+            },
+            {
+              "claim": "The brief used two cycles, exactly the packet URLs, no earlier access to the other condition and the reported tool exclusions.",
+              "sourceIds": [],
+              "judgment": "uncertain",
+              "rationale": "Workflow self-reports cannot be verified from the three public sources or the brief itself. Execution history was not audited; no contradiction is established."
+            },
+            {
+              "claim": "The listed local/configuration hashes describe the actual inputs and configuration.",
+              "sourceIds": [],
+              "judgment": "uncertain",
+              "rationale": "Not source-support claims; this reviewer did not recompute hashes or audit configuration provenance."
+            },
+            {
+              "claim": "Confidence is high in the narrow reading; effectiveness and comparison remain unmeasured.",
+              "sourceIds": [],
+              "judgment": "uncertain",
+              "rationale": "High confidence is uncalibrated self-assessment. The explicit absence of measured effectiveness is appropriately preserved."
+            }
+          ],
+          "dispositionAssessment": "Partial against the full charter, with the bounded conceptual question answered, is appropriately scoped. This brief alone cannot certify integration, preservation or all acceptance records.",
+          "limitations": [
+            "Workflow and hash assertions require separate audit evidence.",
+            "Operational validator, snapshot and human-adjudication questions are explicit; cross-topic transfer and blinded repetition are not explicit open questions.",
+            "More explicit qualifications in this artifact do not establish a causal improvement from role separation."
+          ]
+        }
+      }
+    }
+  },
+  "controls": [
+    {
+      "id": "missing-source-location",
+      "deliberatelyMutated": true,
+      "result": {
+        "status": "evaluated",
+        "diagnostics": [
+          {
+            "code": "SCHEMA_REQUIRED",
+            "file": "<evidence>",
+            "path": "/evidence/0/location",
+            "message": "location is required"
+          }
+        ],
+        "metrics": {
+          "evidenceContractValid": false,
+          "citationReferenceResolution": {
+            "passed": 4,
+            "total": 4,
+            "score": 1
+          },
+          "provenanceCompleteness": {
+            "passed": 29,
+            "total": 30,
+            "score": 0.9666666666666667
+          },
+          "uncertaintyPreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "openQuestionPreservation": {
+            "passed": 2,
+            "total": 2,
+            "score": 1
+          },
+          "sourcePreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "handoffCompleteness": {
+            "passed": 15,
+            "total": 15,
+            "score": 1
+          },
+          "dispositionAccurateForDeclaredCriteria": true,
+          "humanSourceSupport": null,
+          "modelAssistedSourceSupport": null
+        }
+      }
+    },
+    {
+      "id": "lost-uncertainty",
+      "deliberatelyMutated": true,
+      "result": {
+        "status": "evaluated",
+        "diagnostics": [],
+        "metrics": {
+          "evidenceContractValid": true,
+          "citationReferenceResolution": {
+            "passed": 4,
+            "total": 4,
+            "score": 1
+          },
+          "provenanceCompleteness": {
+            "passed": 30,
+            "total": 30,
+            "score": 1
+          },
+          "uncertaintyPreservation": {
+            "passed": 0,
+            "total": 3,
+            "score": 0
+          },
+          "openQuestionPreservation": {
+            "passed": 2,
+            "total": 2,
+            "score": 1
+          },
+          "sourcePreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "handoffCompleteness": {
+            "passed": 14,
+            "total": 15,
+            "score": 0.9333333333333333
+          },
+          "dispositionAccurateForDeclaredCriteria": true,
+          "humanSourceSupport": null,
+          "modelAssistedSourceSupport": null
+        }
+      }
+    },
+    {
+      "id": "lost-open-questions",
+      "deliberatelyMutated": true,
+      "result": {
+        "status": "evaluated",
+        "diagnostics": [],
+        "metrics": {
+          "evidenceContractValid": true,
+          "citationReferenceResolution": {
+            "passed": 4,
+            "total": 4,
+            "score": 1
+          },
+          "provenanceCompleteness": {
+            "passed": 30,
+            "total": 30,
+            "score": 1
+          },
+          "uncertaintyPreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "openQuestionPreservation": {
+            "passed": 0,
+            "total": 2,
+            "score": 0
+          },
+          "sourcePreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "handoffCompleteness": {
+            "passed": 15,
+            "total": 15,
+            "score": 1
+          },
+          "dispositionAccurateForDeclaredCriteria": true,
+          "humanSourceSupport": null,
+          "modelAssistedSourceSupport": null
+        }
+      }
+    },
+    {
+      "id": "overclaimed-disposition",
+      "deliberatelyMutated": true,
+      "result": {
+        "status": "evaluated",
+        "diagnostics": [],
+        "metrics": {
+          "evidenceContractValid": true,
+          "citationReferenceResolution": {
+            "passed": 4,
+            "total": 4,
+            "score": 1
+          },
+          "provenanceCompleteness": {
+            "passed": 30,
+            "total": 30,
+            "score": 1
+          },
+          "uncertaintyPreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "openQuestionPreservation": {
+            "passed": 2,
+            "total": 2,
+            "score": 1
+          },
+          "sourcePreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "handoffCompleteness": {
+            "passed": 15,
+            "total": 15,
+            "score": 1
+          },
+          "dispositionAccurateForDeclaredCriteria": false,
+          "humanSourceSupport": null,
+          "modelAssistedSourceSupport": null
+        }
+      }
+    },
+    {
+      "id": "well-formed-unsupported-claim",
+      "deliberatelyMutated": true,
+      "result": {
+        "status": "evaluated",
+        "diagnostics": [],
+        "metrics": {
+          "evidenceContractValid": true,
+          "citationReferenceResolution": {
+            "passed": 4,
+            "total": 4,
+            "score": 1
+          },
+          "provenanceCompleteness": {
+            "passed": 30,
+            "total": 30,
+            "score": 1
+          },
+          "uncertaintyPreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "openQuestionPreservation": {
+            "passed": 2,
+            "total": 2,
+            "score": 1
+          },
+          "sourcePreservation": {
+            "passed": 3,
+            "total": 3,
+            "score": 1
+          },
+          "handoffCompleteness": {
+            "passed": 15,
+            "total": 15,
+            "score": 1
+          },
+          "dispositionAccurateForDeclaredCriteria": true,
+          "humanSourceSupport": null,
+          "modelAssistedSourceSupport": null
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,43 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { evaluateRecord } from '../src/evaluation.js';
+import { evaluatePilot } from '../evaluation/run.js';
+import { readFileSync } from 'node:fs';
+test('evaluation treats missing runs/denominators and human judgments as unknown, not invented success', () => {
+  assert.equal(evaluateRecord({ run: { status: 'not_run' } }).metrics, null);
+  const r = evaluateRecord({ run: { checkpoint: {}, task: { disposition: 'partial' } }, evidence: { artifactVersion: '0.1.0', projectId: 'test', synthetic: true, evidence: [], claims: [] }, brief: '', expected: { disposition: 'complete', evidenceIds: [], uncertaintyMarkers: [], openQuestions: [] } });
+  assert.equal(r.metrics.citationReferenceResolution.score, null);
+  assert.equal(r.metrics.humanSourceSupport, null);
+  assert.equal(r.metrics.modelAssistedSourceSupport, null);
+  assert.equal(r.metrics.dispositionAccurateForDeclaredCriteria, false);
+});
+test('well-formed unsupported assertions are not certified and preservation losses reduce the correct axes', () => {
+  const evidence = { artifactVersion: '0.1.0', projectId: 'test', synthetic: true, evidence: [{ id: 'E-001', source: 'synthetic:source', title: null, author: null, publisher: null, published: null, accessed: '2026-10-23', location: 'section 1', supportedClaims: ['C-001'], limitations: ['Synthetic negative control'], status: 'accessible', contradicts: [] }], claims: [{ id: 'C-001', text: 'This invented assertion is deliberately unsupported by any real source.', type: 'observation', status: 'verified', evidenceIds: ['E-001'], dependsOn: [], contraryEvidenceIds: [], reasoning: null, uncertainty: 'Deliberately fabricated negative control' }] };
+  const expected = { disposition: 'complete', evidenceIds: ['E-001'], uncertaintyMarkers: ['limited sample'], openQuestions: ['Does this generalize?'] };
+  const run = { task: { disposition: 'complete' }, checkpoint: { evidenceIds: ['E-001'], evidence, uncertainty: 'limited sample', openQuestions: ['Does this generalize?'] } };
+  const good = evaluateRecord({ run, expected, evidence, brief: 'See [C-001] and E-001.' });
+  assert.equal(good.metrics.evidenceContractValid, true);
+  assert.equal(good.metrics.humanSourceSupport, null);
+  assert.equal(good.metrics.citationReferenceResolution.score, 1);
+  assert.equal(good.metrics.uncertaintyPreservation.score, 1);
+  const lost = structuredClone(run); lost.checkpoint.uncertainty = ''; lost.checkpoint.openQuestions = [];
+  const bad = evaluateRecord({ run: lost, expected, evidence, brief: 'See E-999.' });
+  assert.equal(bad.metrics.uncertaintyPreservation.score, 0);
+  assert.equal(bad.metrics.openQuestionPreservation.score, 0);
+  assert.equal(bad.metrics.citationReferenceResolution.score, 0);
+});
+test('the recorded pilot reproduces its golden report and all synthetic negative controls', () => {
+  const result = evaluatePilot();
+  const saved = JSON.parse(readFileSync(new URL('../examples/pilot-citation-reliability/evaluation-results.json', import.meta.url), 'utf8'));
+  assert.deepEqual(result, saved);
+  assert.equal(result.recordedResearchConditions, 2);
+  assert.equal(result.causalImprovementEstablished, false);
+  assert.ok(Object.values(result.results).every(r => r.metrics.humanSourceSupport === null));
+  const controls = Object.fromEntries(result.controls.map(c => [c.id, c.result.metrics]));
+  assert.equal(controls['missing-source-location'].evidenceContractValid, false);
+  assert.equal(controls['lost-uncertainty'].uncertaintyPreservation.score, 0);
+  assert.equal(controls['lost-open-questions'].openQuestionPreservation.score, 0);
+  assert.equal(controls['overclaimed-disposition'].dispositionAccurateForDeclaredCriteria, false);
+  assert.equal(controls['well-formed-unsupported-claim'].evidenceContractValid, true);
+  assert.equal(controls['well-formed-unsupported-claim'].modelAssistedSourceSupport, null);
+});

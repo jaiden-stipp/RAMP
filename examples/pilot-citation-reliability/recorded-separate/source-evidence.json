@@ -1,0 +1,59 @@
+{
+  "artifactVersion": "0.1.0",
+  "projectId": "pilot-citation-reliability",
+  "synthetic": false,
+  "evidence": [
+    {
+      "id": "E-001",
+      "source": "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "title": "JSON Schema Validation",
+      "author": "A. Wright, H. Andrews, B. Hutton (editors)",
+      "publisher": "JSON Schema project / IETF Internet-Draft",
+      "published": "2022-06-16",
+      "accessed": "2026-10-23",
+      "location": "Sections 3, 7.1, 7.2.1, 7.2.2",
+      "supportedClaims": [],
+      "limitations": [
+        "Internet-Draft/work in progress, not an RFC",
+        "Format assertions vary by vocabulary and implementation"
+      ],
+      "status": "accessible",
+      "contradicts": []
+    },
+    {
+      "id": "E-002",
+      "source": "https://www.w3.org/TR/prov-overview/",
+      "title": "PROV-Overview",
+      "author": "Paul Groth and Luc Moreau (editors)",
+      "publisher": "W3C",
+      "published": "2013-04-30",
+      "accessed": "2026-10-23",
+      "location": "Abstract and Section 1",
+      "supportedClaims": [],
+      "limitations": [
+        "Non-normative overview",
+        "Same standards family as E-003; not independent empirical corroboration"
+      ],
+      "status": "accessible",
+      "contradicts": []
+    },
+    {
+      "id": "E-003",
+      "source": "https://www.w3.org/TR/prov-dm/",
+      "title": "PROV-DM: The PROV Data Model",
+      "author": "Luc Moreau and Paolo Missier (editors)",
+      "publisher": "W3C",
+      "published": "2013-04-30",
+      "accessed": "2026-10-23",
+      "location": "Sections 2.1 and 2.2.2 (informative overview)",
+      "supportedClaims": [],
+      "limitations": [
+        "The cited Section 2 is informative",
+        "A provenance record is itself an artifact needing assessment"
+      ],
+      "status": "accessible",
+      "contradicts": []
+    }
+  ],
+  "claims": []
+}

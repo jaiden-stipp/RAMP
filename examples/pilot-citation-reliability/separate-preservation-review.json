@@ -1,0 +1,100 @@
+{
+  "reviewVersion": "0.1.0",
+  "condition": "separate-agent",
+  "inspectionType": "Follow-up preservation inspection of the same pilot condition",
+  "disposition": "complete",
+  "dispositionScope": "The requested comparison is complete; preservation is partial relative to all original packet detail and the completed analyst state.",
+  "inspectedArtifact": "recorded-separate/restored-context.md",
+  "comparisonBasis": [
+    "sources.json, read initially and reopened locally for this comparison",
+    "charter.md and analyst-instructions.md as read before the initial brief",
+    "The initial analyst assignment and observed work in this same model context",
+    "The analyst's own separate-agent-brief.md, already written before this follow-up"
+  ],
+  "causalLimitation": "The structured handoff arrived after the initial brief was written. It cannot explain that brief's quality. This inspection is not another independent trial, new source study, fresh model run, or human verification.",
+  "sourceChecks": [
+    {
+      "id": "E-001",
+      "idAndUrlRetained": true,
+      "url": "https://json-schema.org/draft/2020-12/json-schema-validation",
+      "originalLocators": ["Section 3: Overview", "Section 7.1: Foreword", "Sections 7.2.1 and 7.2.2: annotation/assertion vocabularies"],
+      "restoredLocator": "Sections 3, 7.1, 7.2.1, 7.2.2",
+      "locatorFinding": "All original section numbers retained; descriptive headings omitted.",
+      "retainedQualifications": ["Internet-Draft/work in progress, not an RFC", "Format assertions vary by vocabulary and implementation"],
+      "missingPacketDetail": ["Short excerpt", "Explicit note distinguishing defined semantic formats from arbitrary natural-language entailment", "Full original title; the restored title is shortened"]
+    },
+    {
+      "id": "E-002",
+      "idAndUrlRetained": true,
+      "url": "https://www.w3.org/TR/prov-overview/",
+      "originalLocators": ["Abstract", "Section 1: Introduction"],
+      "restoredLocator": "Abstract and Section 1",
+      "locatorFinding": "Abstract and section number retained; section heading omitted.",
+      "retainedQualifications": ["Non-normative overview", "Same standards family as E-003; not independent empirical corroboration"],
+      "missingPacketDetail": ["Short excerpt", "Explicit assessment/interchange purpose note", "Working Group Note publication classification"]
+    },
+    {
+      "id": "E-003",
+      "idAndUrlRetained": true,
+      "url": "https://www.w3.org/TR/prov-dm/",
+      "originalLocators": ["Section 2.1: PROV Core Structures", "Section 2.2.2: Provenance of Provenance"],
+      "restoredLocator": "Sections 2.1 and 2.2.2 (informative overview)",
+      "locatorFinding": "Both original section numbers and informative status retained; descriptive headings omitted.",
+      "retainedQualifications": ["The cited Section 2 is informative", "Restored record also says a provenance record itself needs assessment"],
+      "missingPacketDetail": ["Short excerpt", "Explicit packet description of entities/activities/agents and attribution/generation time", "W3C Recommendation publication classification"]
+    }
+  ],
+  "sharedSourceMetadata": {
+    "observed": "All three source publication dates and the packet's 2026-10-23 access date are retained. IDs occur in both task.evidenceIds and evidence.evidence. Source URLs match the packet exactly.",
+    "supportMapping": "All restored supportedClaims arrays and evidence.claims are empty. The restored context therefore does not contain completed claim-to-source support judgments. Empty arrays do not establish that a claim is supported or that no contradictory evidence exists."
+  },
+  "uncertaintyCheck": {
+    "retained": ["Format assertion behavior varies by implementation", "Source dependence is recorded, specifically the E-002/E-003 family relationship", "This is not a benchmark", "No general reliability result is asserted"],
+    "partiallyRetained": ["The restored shared instructions require disclosure of missing human review and unmeasured comparisons, but do not themselves record that these were absent from this completed condition."],
+    "missingFromCompletedAnalystState": ["The brief's distinction between confidence in the examined passages and unmeasured practical effectiveness", "Explicit absence of a validator test and preservation replay at initial brief completion", "The brief's partial full-charter disposition and answer to the bounded question"]
+  },
+  "openQuestionsCheck": {
+    "restoredQuestions": ["Does human source review agree?", "Would repeated unrelated cases show a practical benefit?"],
+    "finding": "These retain broad human-review and generalization uncertainties. They do not reproduce the analyst brief's concrete implementation questions.",
+    "missingAnalystQuestions": ["Which schema and validator settings does RAMP use?", "Which source snapshots and fields survive its actual handoff?", "Which review rubric and human adjudication distinguish unsupported, overstated and contradicted claims?"]
+  },
+  "configurationCheck": {
+    "originalManifestHashRetainedInSourceConfiguration": "7b8f61c947d72b33298606a6ef8a1290cebf8ec0a6a4a69bf3ae223c3e6e0526",
+    "originalCoreHashRetained": "ae79c652c6e7a8804436c0e6b821562e606b49440677ef4c7335640fcd384862",
+    "originalAnalystModuleHashRetained": "281e3838432fa6e2f85cc0f725b5030d53041512b870dd66d4655ecf1f434384",
+    "originalEvidenceFirstModuleHashRetained": "dac06d8d7f7e559a790126410fc304284fce9223125869a4c5d30e42a9127728",
+    "destinationManifestHash": "bf9d52afda98328fdb8ceba08f10b6794eff723c190a76dc6ceca9f3c614fa98",
+    "finding": "The header uses the destination manifest hash, while sourceConfiguration preserves the original manifest hash. The original is not overwritten. The core and two analyst module hashes match the originally supplied instructions. Configuration content was not independently reconstructed or cryptographically authenticated.",
+    "localInputHashCheck": {
+      "charterSha256": "6ae91dcbc2957bed44f7c0a8d8f8eb549a4dc5075a8e819598b1d1b1ce639caa",
+      "sourcesPacketSha256": "df70af385551708e973c3b9e4cafdf4fddcbdcba1b3ccf0f9c650bb4313a1a77",
+      "analystInstructionsSha256": "e58ec75499a2efa32a6458705be9b44cb6a16572e2882c108701fcdf75860fcf",
+      "finding": "Recomputed local file hashes match those recorded in the original brief. The restored task includes the charter hash, but not the source packet or analyst-instructions file hashes. This checks these local inputs, not remote webpage bytes."
+    }
+  },
+  "ownerAndActionCheck": {
+    "restoredOwner": "scout",
+    "restoredPhase": "analyze",
+    "restoredNextAction": "Analyze the packet and retain all qualifications",
+    "analystAssignment": "Separate analyst",
+    "completedBriefNextOwner": "Parent pilot coordinator",
+    "completedBriefNextAction": "Review the brief, integrate condition/handoff records and determine full-charter acceptance",
+    "finding": "A concrete owner and action are present, but represent an earlier analysis state rather than the analyst assignment/completed brief handoff. Analysis pending, null review and null disposition likewise do not describe the completed brief. This difference alone does not show information was lost during serialization."
+  },
+  "budgetCheck": {
+    "retainedLimits": {"sources": 3, "researchIterations": 2},
+    "restoredUsage": {"sources": 3, "iterations": 1},
+    "initialAnalystObservedUsage": {"distinctPrimarySources": 3, "researchCycles": 2, "briefsProduced": 1},
+    "finding": "The source count matches. The saved iteration count is one below the analyst's completed two-cycle account, consistent with an earlier snapshot. The restored record has no event-level account of this analyst's page reopens/targeted verification. No additional research cycle is claimed for this local inspection.",
+    "followupActivity": "One follow-up local comparison; zero web retrievals, new primary sources, model reruns, external model APIs, paid services or subagents."
+  },
+  "limitations": [
+    "This model compared the restored text with known inputs and its prior work; no independent human reviewer participated.",
+    "The pre-restoration serialized handoff and transformation implementation were not inspected. Missing details may have been omitted before restoration; this inspection cannot attribute loss to capture, serialization or restoration.",
+    "The restored context is not a faithful completion snapshot of the finished analyst work, but may accurately reflect its own earlier saved state.",
+    "Preserved IDs, locators and hash strings establish observed record retention only within this comparison. They do not establish the truth of provenance assertions, source support, runtime enforcement or general reliability improvement.",
+    "The initial brief was not edited. No other pilot artifacts were modified."
+  ],
+  "nextOwner": "Parent pilot coordinator",
+  "nextAction": "Integrate this follow-up inspection as a preservation check in the existing condition; preserve its timing and scope limitations, and do not count it as an additional independent trial or evidence that the later structured handoff improved the earlier brief."
+}

@@ -1,0 +1,18 @@
+{
+  "protocolVersion": "0.1.0",
+  "project": {
+    "id": "pilot-citation-reliability", "title": "Citation reliability in research handoffs",
+    "question": "What can JSON Schema validation and provenance records establish about citation reliability in a research-agent handoff?",
+    "scope": ["Documented validation scope", "Provenance records", "Source-support review"],
+    "exclusions": ["Paid experiments", "General model performance rankings", "Claims of human-independent factual verification"],
+    "allowedCapabilities": ["source.read", "artifact.write"],
+    "limits": { "maxSources": 3, "maxIterations": 2 },
+    "stopConditions": ["Deliver a cited, qualified answer after source review", "Stop acquisition at three primary sources", "Report unmeasured comparison conditions and missing human review explicitly"]
+  },
+  "agents": [
+    { "id": "scout", "modules": ["roles/scout", "methods/evidence-first"] },
+    { "id": "analyst", "modules": ["roles/analyst", "methods/evidence-first"] },
+    { "id": "reviewer", "modules": ["roles/reviewer", "methods/evidence-first"] },
+    { "id": "synthesist", "modules": ["roles/synthesist", "methods/evidence-first", "outputs/research-brief"] }
+  ]
+}
