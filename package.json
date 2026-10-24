@@ -4,10 +4,16 @@
   "private": true,
   "description": "Research Agent Management Protocol: a stable research core with composable agent modules.",
   "type": "module",
-  "engines": { "node": ">=22" },
+  "engines": {
+    "node": ">=22"
+  },
   "scripts": {
     "test": "node --test",
     "validate": "node src/cli.js validate examples/literature-review/ramp.json",
     "compose": "node src/cli.js compose examples/literature-review/ramp.json"
+  },
+  "dependencies": {
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1"
   }
 }

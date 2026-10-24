@@ -27,9 +27,10 @@ Personality is independent of authority: a persuasive or adventurous persona can
 
 ## Try it
 
-Requires Node.js 22 or later. No packages, credentials, or API keys are needed.
+Requires Node.js 22 or later. Install the pinned validator dependencies with `npm ci`. No credentials or API keys are needed. See [schema/editor and diagnostics support](docs/VALIDATION.md).
 
 ```sh
+npm ci
 npm test
 npm run validate
 npm run compose

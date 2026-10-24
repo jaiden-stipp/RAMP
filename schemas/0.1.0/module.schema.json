@@ -1,0 +1,22 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://ramp.local/schemas/0.1.0/module.schema.json",
+  "title": "RAMP module 0.1.0",
+  "type": "object", "additionalProperties": false,
+  "required": ["id", "version", "protocolVersion", "kind", "summary", "instructions", "requires", "excludes", "capabilities"],
+  "properties": {
+    "id": { "$ref": "#/definitions/moduleId" },
+    "version": { "type": "string", "pattern": "^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)$" },
+    "protocolVersion": { "const": "0.1.0" },
+    "kind": { "enum": ["roles", "methods", "personas", "outputs"] },
+    "summary": { "type": "string", "pattern": "\\S" },
+    "instructions": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "type": "string", "pattern": "\\S" } },
+    "requires": { "$ref": "#/definitions/moduleIds" },
+    "excludes": { "$ref": "#/definitions/moduleIds" },
+    "capabilities": { "type": "array", "uniqueItems": true, "items": { "type": "string", "pattern": "^[a-z][a-z0-9]*(?:\\.[a-z][a-z0-9]*)+$" } }
+  },
+  "definitions": {
+    "moduleId": { "type": "string", "pattern": "^(roles|methods|personas|outputs)/[a-z][a-z0-9]*(?:-[a-z0-9]+)*$" },
+    "moduleIds": { "type": "array", "uniqueItems": true, "items": { "$ref": "#/definitions/moduleId" } }
+  }
+}

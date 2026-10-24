@@ -16,7 +16,7 @@
 
 ## Proposed extensions
 
-- JSON Schemas and editor support for manifests and research artifacts.
+- Available: JSON Schemas, editor support, and machine-readable diagnostics for manifests and modules. Research artifact schemas follow in the persistence work.
 - Task and evidence validators, state transitions, and budget accounting.
 - Host adapters that enforce capabilities and phase gates.
 - Module version resolution, lockfiles, and a reviewed module registry.

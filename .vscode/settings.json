@@ -1,0 +1,6 @@
+{
+  "json.schemas": [
+    { "fileMatch": ["**/ramp.json"], "url": "./schemas/0.1.0/project.schema.json" },
+    { "fileMatch": ["/modules/**/*.json"], "url": "./schemas/0.1.0/module.schema.json" }
+  ]
+}

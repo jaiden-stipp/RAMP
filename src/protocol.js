@@ -2,6 +2,7 @@ import { readFileSync, realpathSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { dirname, isAbsolute, join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { assertSchema, DiagnosticError, diagnostic, diagnosticsOf } from './validation.js';
 
 export const PROTOCOL_VERSION = '0.1.0';
 export const REPO_ROOT = dirname(dirname(fileURLToPath(import.meta.url)));
@@ -35,7 +36,8 @@ function version(value, label) {
   requireThat(value === PROTOCOL_VERSION, `${label} must be ${PROTOCOL_VERSION}`);
 }
 
-export function validateManifest(manifest) {
+export function validateManifest(manifest, file = '<manifest>') {
+  assertSchema('project', manifest, file);
   object(manifest, ['protocolVersion', 'project', 'agents'], 'manifest');
   version(manifest.protocolVersion, 'manifest.protocolVersion');
   const p = manifest.project;
@@ -63,7 +65,8 @@ export function validateManifest(manifest) {
   return manifest;
 }
 
-export function validateModule(module, expectedId) {
+export function validateModule(module, expectedId, file = '<module>') {
+  assertSchema('module', module, file);
   object(module, ['id', 'version', 'protocolVersion', 'kind', 'summary', 'instructions', 'requires', 'excludes', 'capabilities'], 'module');
   string(module.id, 'module.id', modulePattern);
   requireThat(module.id === expectedId, `Module ID mismatch: expected ${expectedId}, got ${module.id}`);
@@ -105,34 +108,45 @@ export function sha256(content) {
   return createHash('sha256').update(content).digest('hex');
 }
 
-function readJson(path) {
-  const raw = readFileSync(path, 'utf8');
+export function readJson(path) {
+  let raw;
+  try { raw = readFileSync(path, 'utf8'); }
+  catch (error) { throw new DiagnosticError([diagnostic('FILE_READ', error.message, path)]); }
   try {
     return { raw, value: JSON.parse(raw) };
   } catch (error) {
-    throw new Error(`Invalid JSON in ${path}: ${error.message}`);
+    throw new DiagnosticError([diagnostic('JSON_SYNTAX', `Invalid JSON: ${error.message}`, path)]);
   }
 }
 
 export function loadProject(manifestPath, root = REPO_ROOT) {
   const { raw, value: manifest } = readJson(manifestPath);
-  validateManifest(manifest);
+  try { validateManifest(manifest, manifestPath); }
+  catch (error) { throw new DiagnosticError(diagnosticsOf(error, manifestPath)); }
   const moduleRoot = realpathSync(join(root, 'modules'));
   const cache = new Map();
-  const agents = manifest.agents.map(agent => {
+  const errors = [];
+  const agents = manifest.agents.map((agent, agentIndex) => {
     const modules = agent.modules.map(id => {
+      const candidate = join(moduleRoot, `${id}.json`);
+      try {
       if (!cache.has(id)) {
         const path = realpathSync(join(moduleRoot, `${id}.json`));
         const local = relative(moduleRoot, path);
         requireThat(local !== '..' && !local.startsWith(`..\\`) && !local.startsWith('../') && !isAbsolute(local), `Module ${id} resolves outside module directory`);
         const loaded = readJson(path);
-        cache.set(id, { ...validateModule(loaded.value, id), hash: sha256(loaded.raw) });
+        cache.set(id, { ...validateModule(loaded.value, id, path), hash: sha256(loaded.raw) });
       }
       return cache.get(id);
-    });
-    validateAgent(agent, modules, manifest.project.allowedCapabilities);
+      } catch (error) { errors.push(...diagnosticsOf(error, candidate)); return null; }
+    }).filter(Boolean);
+    if (modules.length === agent.modules.length) {
+      try { validateAgent(agent, modules, manifest.project.allowedCapabilities); }
+      catch (error) { errors.push(...diagnosticsOf(error, manifestPath, `/agents/${agentIndex}/modules`)); }
+    }
     return { ...agent, modules };
   });
+  if (errors.length) throw new DiagnosticError(errors);
   const core = readFileSync(join(root, 'spec', 'CORE.md'), 'utf8');
   return { manifest, manifestHash: sha256(raw), core, coreHash: sha256(core), agents };
 }

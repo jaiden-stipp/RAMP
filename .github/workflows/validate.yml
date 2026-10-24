@@ -18,6 +18,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+      - run: npm ci
       - run: npm test
       - run: npm run validate
       - run: node src/cli.js compose examples/literature-review/ramp.json --out dist/research-agents.md
