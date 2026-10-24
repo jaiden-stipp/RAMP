@@ -6,7 +6,7 @@ A shared protocol for configuring research agents, organizing their work, and pr
 
 The inspiration is Baymax's interchangeable personality chips: a stable core stays in place while modules change what an agent specializes in and how it interacts. In RAMP, the core holds research integrity and project boundaries. Modules supply roles, methods, communication styles, and output formats.
 
-**Status: 0.1.0 design draft with a working instruction composer.** This repository defines the protocol and generates instructions. It does not run agents or enforce their behavior at runtime.
+**Status: 0.1.0 draft with configuration tooling, persistent research records, a reference host, and a recorded pilot.** The reference host mediates explicitly configured tools, state gates, and budgets. External frameworks own model execution and scheduling; structural checks do not prove source support or model behavior.
 
 ## The idea
 
@@ -70,6 +70,7 @@ Use [configuration lockfiles](docs/LOCKFILES.md) to reproduce an agent configura
 - [Persistent tasks](docs/TASKS.md): append-only history, phase gates, review, and executable workflow example.
 - [Handoff checkpoints](docs/HANDOFFS.md) and [shared budgets](docs/BUDGETS.md): resumable context, module swaps, and project-wide reservations.
 - [Recorded research pilot](examples/pilot-citation-reliability/README.md): actual source review, separate model contexts, preserved failures, and an offline evaluation rubric/report. It does not establish a general performance advantage.
+- [Reference host adapter](docs/HOSTS.md): capability/tool mediation, budgets, cancellation, checkpoints, and a deterministic fake-agent example without API keys.
 - [Roadmap](ROADMAP.md): proposed next steps.
 - [Contributing](CONTRIBUTING.md): evolve the draft with concrete use cases.
 
